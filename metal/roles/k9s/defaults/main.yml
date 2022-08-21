@@ -1,0 +1,4 @@
+---
+k9s_version: 0.26.3
+k9s_arch: "x86_64"
+k9s_url: "https://github.com/derailed/k9s/releases/download/v{{ k9s_version }}/k9s_Linux_{{ k9s_arch }}.tar.gz"

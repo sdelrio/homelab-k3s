@@ -1,0 +1,10 @@
+# Cluster Playbook
+---
+
+- name: Create k3s cluster
+  hosts: all
+  vars:
+    ansible_path: "{{ playbook_dir }}/../.."
+  roles:
+    - k3s
+

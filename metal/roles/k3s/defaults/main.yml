@@ -1,0 +1,16 @@
+k3s_version: v1.24.3+k3s1
+k3s_config_file: /etc/rancher/k3s/config.yaml
+k3s_token_file: /etc/rancher/node/password
+k3s_service_file: /etc/systemd/system/k3s.service
+k3s_kubelet_args:
+- container-log-max-size=10Mi
+- container-log-max-files=2
+k3s_server_config:
+  disable:
+    - local-storage
+    - servicelb
+    - traefik
+  disable-cloud-controller: true
+  secrets-encryption: true
+  disable-network-policy: true   # Disable default CNI to install Cillium eBPF later
+  flannel-backend: none   # Disable default CNI to install Cillium eBPF later

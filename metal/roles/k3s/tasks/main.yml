@@ -1,0 +1,94 @@
+---
+- name: Check requirements
+  assert:
+    that:
+      - ansible_path is defined
+
+- name: Download binary
+  ansible.builtin.get_url:
+    url: https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/{{ k3s_binary }}
+    checksum: sha256:https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/sha256sum-{{ k3s_arch }}.txt
+    dest: "/usr/local/bin/k3s-{{ k3s_version }}"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Link binary
+  ansible.builtin.file:
+    src: "/usr/local/bin/k3s-{{ k3s_version }}"
+    dest: "/usr/local/bin/k3s"
+    state: link
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Ensure config directories exist
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+  loop:
+    - /etc/rancher/k3s
+    - /etc/rancher/node
+
+- name: Check if token file exists on the first node
+  run_once: true
+  stat:
+    path: "{{ k3s_token_file }}"
+  register: k3s_token_file_stat
+
+- name: Generate token file on the first node if not exist yet
+  run_once: true
+  when: not k3s_token_file_stat.stat.exists
+  ansible.builtin.copy:
+    content: "{{ lookup('community.general.random_string', length=32) }}"
+    dest: "{{ k3s_token_file }}"
+    mode: 0600
+
+- name: Get token from the first node
+  run_once: true
+  slurp:
+    src: "{{ k3s_token_file }}"
+  register: k3s_token_base64
+
+- name: Ensure all nodes has the same token
+  copy:
+    content: "{{ k3s_token_base64.content | b64decode }}"
+    dest: "{{ k3s_token_file }}"
+    mode: 0600
+
+- name: Copy config file
+  template:
+    src: config.yaml.j2
+    dest: "{{ k3s_config_file }}"
+    mode: 0644
+
+- name: Copy service systemctl file
+  template:
+    src: k3s.service.j2
+    dest: "{{ k3s_service_file }}"
+
+- name: Enable service
+  systemd:
+    name: k3s
+    enabled: true
+    state: started
+  register: k3s_service
+  until: k3s_service is succeeded
+  retries: 5
+
+- name: Get Kubernetes config file
+  run_once: true
+  slurp:
+    src: /etc/rancher/k3s/k3s.yaml
+  register: kubeconfig_base64
+
+- name: Write Kubernetes config file with the correct cluster address
+  copy:
+    content: "{{ kubeconfig_base64.content | b64decode | replace('127.0.0.1', hostvars[groups['kube_control_plane'][0]].ansible_hostname) }}"
+    dest: "{{ ansible_path }}/kubeconfig.yaml"
+    mode: 0600
+  delegate_to: localhost
+  become: false
+  run_once: true
+

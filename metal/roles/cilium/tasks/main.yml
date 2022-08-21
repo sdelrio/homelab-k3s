@@ -1,0 +1,50 @@
+---
+
+- name: Download binary
+  ansible.builtin.get_url:
+    url: "{{ cilium_url }}"
+    checksum: "sha256:{{ cilium_sha256[cilium_arch] }}"
+    dest: "/opt/cilium.tar.gz"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: "/opt/cilium.tar.gz"
+    dest: "/usr/local/bin"
+    creates: "/usr/local/bin/cilium"
+    remote_src: true
+
+- name: Check if secrets already created
+  ansible.builtin.command:
+    cmd: k3s kubectl get secret hubble-server-certs -n kube-system
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  register: hubble_secret
+  changed_when: False
+  ignore_errors: yes
+
+- name: Install command
+  ansible.builtin.command:
+    cmd: cilium install -n cilium
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  when: hubble_secret.rc != 0
+  register: install_cilium
+
+- name: Show install output
+  debug:
+    var: install_cilium.stdout
+  when: hubble_secret.rc != 0
+
+- name: Validate install
+  ansible.builtin.command:
+    cmd: cilium status --wait
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+  register: validate_cilium
+
+- name: Show validate output
+  debug:
+    var: validate_cilium.stdout

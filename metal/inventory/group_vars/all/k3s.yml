@@ -1,0 +1,6 @@
+# all group_vars
+---
+
+k3s_arch: "amd64"
+k3s_binary: "k3s"
+

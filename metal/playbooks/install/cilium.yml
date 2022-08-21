@@ -1,0 +1,8 @@
+---
+- name: Create k3s cluster
+  hosts: kube_control_plane
+  vars:
+    ansible_path: "{{ playbook_dir }}/../.."
+  roles:
+    - cilium
+

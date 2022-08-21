@@ -1,0 +1,17 @@
+---
+
+- name: "Download and extract binary"
+  ansible.builtin.get_url:
+    url: "{{ k9s_url }}"
+    checksum: "sha256:https://github.com/derailed/k9s/releases/download/v{{ k9s_version }}/checksums.txt"
+    dest: "/opt/k9s.tar.gz"
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Unarchive a file that is already on the remote machine
+  ansible.builtin.unarchive:
+    src: "/opt/k9s.tar.gz"
+    dest: "/usr/local/bin"
+    creates: "/usr/local/bin/k9s"
+    remote_src: true

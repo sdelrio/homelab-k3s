@@ -1,0 +1,4 @@
+---
+nerdctl_version: 0.22.2
+nerdctl_arch: "amd64"
+nerdctl_url: "https://github.com/containerd/nerdctl/releases/download/v{{ nerdctl_version }}/nerdctl-{{ nerdctl_version }}-linux-{{ nerdctl_arch }}.tar.gz"

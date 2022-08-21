@@ -1,0 +1,5 @@
+# arm64 group vars
+---
+k3s_arch: "arm64"
+k3s_binary: "k3s-{{ k3s_arch }}"
+

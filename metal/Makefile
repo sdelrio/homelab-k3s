@@ -72,6 +72,13 @@ install-cilium:
 		$(ANSIBLE_EXTRA_ARGS) \
 		playbooks/install/cilium.yml
 
+install-metallb-conf:	## Install metallb configmap and namespace
+install-metallb-conf:
+	@${PYTHON_BIN_DIR}/ansible-playbook \
+		$(ANSIBLE_EXTRA_ARGS) \
+		playbooks/install/metallb_config.yml
+
+
 install-tools:
 install-tools:
 	@${PYTHON_BIN_DIR}/ansible-playbook \

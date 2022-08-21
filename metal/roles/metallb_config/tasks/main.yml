@@ -1,0 +1,5 @@
+- name: Ensure MetalLB base resources exist
+  kubernetes.core.k8s:
+    definition: "{{ lookup('file', item) | from_yaml }}"
+    state: present
+  loop: "{{ lookup('fileglob', '*.yaml', wantlist=True) | sort }}"

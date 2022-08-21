@@ -22,6 +22,15 @@
     group: root
     mode: 0755
 
+- name: Link binary kubectl
+  ansible.builtin.file:
+    src: "/usr/local/bin/k3s"
+    dest: "/usr/local/bin/kubectl"
+    state: link
+    owner: root
+    group: root
+    mode: 0755
+
 - name: Ensure config directories exist
   ansible.builtin.file:
     path: "{{ item }}"

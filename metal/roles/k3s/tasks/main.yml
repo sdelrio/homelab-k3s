@@ -66,16 +66,17 @@
     dest: "{{ k3s_token_file }}"
     mode: 0600
 
-- name: Copy config file
+- name: Copy k3s config files
   template:
-    src: config.yaml.j2
-    dest: "{{ k3s_config_file }}"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     mode: 0644
-
-- name: Copy service systemctl file
-  template:
-    src: k3s.service.j2
-    dest: "{{ k3s_service_file }}"
+  loop:
+    - src: config.yaml.j2
+      dest: "{{ k3s_config_file }}"
+    - src: k3s.service.j2
+      dest: "{{ k3s_service_file }}"
+  notify: restart k3s
 
 - name: Enable service
   systemd:

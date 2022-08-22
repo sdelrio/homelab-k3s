@@ -42,7 +42,7 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster and install cilium
-cluster: $(SSH_KEY_FILE) requirements-ansible install-k3s install-cilium
+cluster: $(SSH_KEY_FILE) requirements-ansible install-k3s install-cilium install-metallb-conf install-metallb
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools
@@ -78,12 +78,16 @@ install-metallb-conf:
 		$(ANSIBLE_EXTRA_ARGS) \
 		playbooks/install/metallb_config.yml
 
-
 install-tools:
 install-tools:
 	@${PYTHON_BIN_DIR}/ansible-playbook \
 		$(ANSIBLE_EXTRA_ARGS) \
 		playbooks/install/tools.yml
+
+install-metallb:	## Install MetalLB
+install-metallb:
+	@cd ../system/metallb-system && \
+		./apply.sh
 
 .PHONY: uninstall-k3s
 uninstall-k3s:	## Uninstall k3s

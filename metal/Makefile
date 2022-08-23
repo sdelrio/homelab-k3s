@@ -16,7 +16,7 @@ help:
 	@echo "Usage: make [TARGET] ..."
 	@echo ""
 	@@egrep -h "#[#]" $(MAKEFILE_LIST) | sed -e 's/\\$$//' | awk 'BEGIN {FS = "[:=].*?#[#] "}; \
-		{printf "\033[36m%-20s\033[0m %s\n", $$1, $$2}'
+		{printf "\033[36m%-22s\033[0m %s\n", $$1, $$2}'
 	@echo ""
 
 .PHONY: venv
@@ -42,7 +42,7 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster and install cilium
-cluster: $(SSH_KEY_FILE) requirements-ansible install-k3s install-cilium install-metallb-conf install-metallb
+cluster: $(SSH_KEY_FILE) requirements-ansible install-k3s install-cilium install-metallb install-nginx
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools
@@ -71,12 +71,6 @@ install-cilium:
 	@${PYTHON_BIN_DIR}/ansible-playbook \
 		$(ANSIBLE_EXTRA_ARGS) \
 		playbooks/install/cilium.yml
-
-install-metallb-conf:	## Install metallb configmap and namespace
-install-metallb-conf:
-	@${PYTHON_BIN_DIR}/ansible-playbook \
-		$(ANSIBLE_EXTRA_ARGS) \
-		playbooks/install/metallb_config.yml
 
 install-tools:
 install-tools:

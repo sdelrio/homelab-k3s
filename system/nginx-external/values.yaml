@@ -96,9 +96,9 @@ ingress-nginx:
           sizeLimit: 303Mi
 
     metrics:
-      enabled: true
+      enabled: false
       serviceMonitor:
-        enabled: true
+        enabled: false
 
 #  tcp:
 #    29518: gitea/gitea-ssh:22

@@ -1,0 +1,31 @@
+cert-manager:
+  installCRDs: true
+
+  extraArgs:
+  # Use this flag to set a namespace that cert-manager will use to store
+  # supporting resources required for each ClusterIssuer (default is kube-system)
+  - --cluster-resource-namespace=kube-system
+  # When this flag is enabled, secrets will be automatically removed when the certificate resource is deleted
+  - --enable-certificate-owner-ref=true
+
+  resources:
+    requests:
+      cpu: 10m
+      memory: 32Mi
+
+  prometheus:
+    enabled: false
+    servicemonitor:
+      enabled: false
+
+  webhook:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi
+
+  cainjector:
+    resources:
+      requests:
+        cpu: 10m
+        memory: 32Mi

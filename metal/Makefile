@@ -83,6 +83,19 @@ install-metallb:
 	@cd ../system/metallb-system && \
 		./apply.sh
 
+install-nginx:	## Iinstall nginx
+install-nginx: install-nginx-internal install-nginx-external
+
+install-nginx-internal:	## Install nginx-internal
+install-nginx-internal:
+	@cd ../system/nginx-internal && \
+		./apply.sh
+
+install-nginx-external:	## Install nginx-external
+install-nginx-external:
+	@cd ../system/nginx-external && \
+		./apply.sh
+
 .PHONY: uninstall-k3s
 uninstall-k3s:	## Uninstall k3s
 uninstall-k3s: $(SSH_KEY_FILE) requirements-ansible

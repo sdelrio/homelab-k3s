@@ -1,0 +1,104 @@
+ingress-nginx:
+  controller:
+    stats:
+      enabled: true
+    admissionWebhooks:
+      timeoutSeconds: 30
+
+    replicaCount: 1
+
+    config:
+      proxy-connect-timeout: "10"
+      proxy-read-timeout: "120"
+      proxy-send-timeout: "120"
+      http-snippet: |
+        proxy_cache_path /dev/shm levels=1:2 keys_zone=static-cache:2m max_size=300m inactive=7d use_temp_path=off;
+        proxy_cache_key $scheme$proxy_host$request_uri;
+        proxy_cache_lock on;
+        proxy_cache_use_stale updating;
+    ingressClassResource:
+      name: nginx-external
+      enabled: true
+      default: false
+      controllerValue: "k8s.io/nginx-external"
+
+    ingressClass: nginx-external
+
+    resources:
+      limits:
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+    autoscaling:
+      enabled: false
+      minReplicas: 1
+      maxReplicas: 2
+      targetCPUUtilizationPercentage: 50
+      targetMemoryUtilizationPercentage: 50
+    topologySpreadConstraints:
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: DoNotSchedule
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/component: controller
+            app.kubernetes.io/instance: nginx-external
+            app.kubernetes.io/name: nginx-external
+    service:
+      enabled: true
+
+      annotations: {}
+      labels: {}
+
+      ## List of IP addresses at which the controller services are available
+      ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
+      ##
+      externalIPs: []
+
+      loadBalancerIP: "192.168.1.249"
+
+      enableHttp: true
+      enableHttps: true
+
+      ports:
+        http: 80
+        https: 443
+
+      targetPorts:
+        http: http
+        https: https
+
+      type: LoadBalancer
+
+      ## Enables an additional internal load balancer (besides the external one).
+      ## Annotations are mandatory for the load balancer to come up. Varies with the cloud service.
+      internal:
+        enabled: false
+        annotations: {}
+
+        ## Set external traffic policy to: "Local" to preserve source IP on
+        ## providers supporting it
+        ## Ref: https://kubernetes.io/docs/tutorials/services/source-ip/#source-ip-for-services-with-typeloadbalancer
+        # externalTrafficPolicy: ""
+        #externalTrafficPolicy: "Local"
+
+    extraVolumeMounts:
+      - name: dshm
+        mountPath: /dev/shm
+
+    extraVolumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          # not working until v1.21? https://github.com/kubernetes/kubernetes/issues/63126
+          sizeLimit: 303Mi
+
+    metrics:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+
+#  tcp:
+#    29518: gitea/gitea-ssh:22

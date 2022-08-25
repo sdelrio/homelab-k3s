@@ -8,7 +8,7 @@ if [ ! -d charts ]; then
    helm dependency build
 fi
 
-ho helm template \
+helm template \
     --namespace ${NS} \
     ${DEPLOY} . \
     | kubectl -n ${NS} delete --wait=true -f -

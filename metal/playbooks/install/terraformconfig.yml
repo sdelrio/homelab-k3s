@@ -1,0 +1,18 @@
+# Cluster Playbook
+---
+
+- name: Create cloudflare tokens
+  hosts: localhost
+  vars:
+    ansible_path: "{{ playbook_dir }}/../.."
+  vars_prompt:
+    - name: cloudflare_email
+      prompt: Enter Cloudflare email
+      private: false
+    - name: cloudflare_api_key
+      prompt: Enter Cloudflare API Key (sensitive)
+    - name: cloudflare_account_id
+      prompt: Enter Cloudflare account ID
+      private: false
+  roles:
+    - terraformconfig

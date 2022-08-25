@@ -1,15 +1,14 @@
 #!/bin/sh
 
-NS=kube-system
-DEPLOY=`basename "$PWD"`
+NS=`basename "$PWD"`
+DEPLOY=${NS}
 
-if [ ! -d charts ]; then
-   echo "Building depencency..."
-   helm dependency build
+if [ ! -f Chart.lock ]; then
+   echo "Building helm depencency..."
+   helm dependency update
 fi
 
-# requires namespace to be created
-
+# requires namespace to be already created
 helm template \
     --namespace ${NS} \
     ${DEPLOY} . \

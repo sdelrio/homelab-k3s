@@ -20,21 +20,13 @@ locals {
   public_ip = "${chomp(data.http.public_ipv4.body)}"
 }
 
-# Not proxied, not accessible. Just a record for auto-created A by external-dns.
-resource "cloudflare_record" "svc" {
-  zone_id = data.cloudflare_zone.zone.id
-  type    = "A"
-  name    = "svc"
-  value   = local.public_ip
-  proxied = false
-  ttl     = 1 # Auto
-}
 
 resource "cloudflare_record" "svc_wildcard" {
   zone_id = data.cloudflare_zone.zone.id
   type    = "CNAME"
   name    = "*.svc"
   value   = "svc.lorien.cloud."
+# Leave External-DNS to create svc.lorien.cloud entry
   proxied = false
   ttl     = 1 # Auto
 }
@@ -45,7 +37,6 @@ resource "cloudflare_record" "k3s" {
   type    = "A"
   name    = "k3s"
   value   = "192.168.1.250"
-  #value   = local.public_ip
   proxied = false
   ttl     = 1 # Auto
 }
@@ -120,3 +111,102 @@ resource "kubernetes_secret" "cert_manager_token" {
     "api-token" = cloudflare_api_token.cert_manager.value
   }
 }
+
+resource "kubernetes_service_account" "update-ip" {
+  metadata {
+    name = "update-ip"
+    namespace = "external-dns"
+  }
+  secret {
+    name = "${kubernetes_secret.update-ip.metadata.0.name}"
+  }
+}
+
+resource "kubernetes_secret" "update-ip" {
+  metadata {
+    name = "update-ip"
+  }
+}
+
+resource "kubernetes_cluster_role" "update-ip" {
+  metadata {
+    name = "update-ip"
+  }
+
+  rule {
+    api_groups = ["extensions","networking.k8s.io"]
+    resources  = ["ingresses"]
+    verbs      = ["get", "list", "create", "patch", "update"]
+  }
+}
+
+resource "kubernetes_cluster_role_binding_v1" "update-ip" {
+  metadata {
+    name = "update-ip"
+  }
+  role_ref {
+    api_group = "rbac.authorization.k8s.io"
+    kind      = "ClusterRole"
+    name      = "update-ip"
+  }
+  subject {
+    kind      = "ServiceAccount"
+    name      = "update-ip"
+    namespace = "external-dns"
+  }
+}
+
+resource "kubernetes_cron_job_v1" "update-ip" {
+  metadata {
+    name = "update-ip"
+    namespace = "external-dns"
+  }
+  spec {
+    failed_jobs_history_limit     = 3
+    successful_jobs_history_limit = 3
+    concurrency_policy            = "Replace"
+    schedule                      = "*/30 * * * *"
+    starting_deadline_seconds     = 10
+    job_template {
+      metadata {}
+      spec {
+        backoff_limit              = 2
+        ttl_seconds_after_finished = 10
+        template {
+          metadata {}
+          spec {
+            service_account_name = "update-ip"
+            container {
+              name = "update-ip"
+              env {
+                name = "IP_HOSTNAME"
+                value = "svc.lorien.cloud"
+              }
+              image = "bitnami/kubectl:1.24.3"
+              command = ["/bin/sh",
+                         "-c", <<-EOT
+                         cat << EOF > /tmp/ingress.yml && kubectl apply -f /tmp/ingress.yml
+                         apiVersion: networking.k8s.io/v1
+                         kind: Ingress
+                         metadata:
+                           name: update-ip
+                           namespace: external-dns
+                           annotations:
+                             kubernetes.io/ingress.class: nginx
+                             external-dns.alpha.kubernetes.io/hostname: '$IP_HOSTNAME'
+                             external-dns.alpha.kubernetes.io/target: '$(curl --silent ifconfig.me)'
+                         spec:
+                           rules:
+                           - host: '$IP_HOSTNAME'
+                         EOF
+                         cat /tmp/ingress.yml
+                         EOT
+                        ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
+

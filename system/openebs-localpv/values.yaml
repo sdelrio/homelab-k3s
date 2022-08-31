@@ -1,0 +1,85 @@
+openebs:
+
+  # Disable Provisioner
+  provisioner:
+    enabled: false
+
+  # We only want OpenEBS for the local storage provisioner
+  localprovisioner:
+    basePath: "/openebs/local"
+    nodeSelector: {}
+    tolerations: []
+    affinity: {}
+    resources: {}
+    # limits:
+    #   cpu: 1000m
+    #   memory: 2Gi
+    # requests:
+    #   cpu: 500m
+    #   memory: 1Gi
+    healthCheck:
+      initialDelaySeconds: 30
+      periodSeconds: 60
+
+    deviceClass:
+      enabled: false
+
+  hostpathClass:
+    name: openebs-hostpath
+    enabled: true
+    reclaimPolicy: Delete
+    # Path on the host where local volumes of this storage class are mounted under.
+    # NOTE: If not specified, this defaults to the value of localprovisioner.basePath.
+    basePath: "/openebs/local"
+    #xfsQuota:
+    #  enabled: true
+    #ext4Quota:
+    #  enabled: true
+
+  snapshotOperator:
+    enabled: false
+
+  # API Server replicas
+  apiserver:
+    enabled: false
+
+  defaultStorageConfig:
+    enabled: false
+  # We don't want the chart create the default storage class
+
+  # Disable snapshot Operator
+  snapshotOperator:
+    enabled: false
+
+  # Disable Node Disk Manager
+  ndm:
+    enabled: false
+
+  # Disable ndm Operator
+  ndmOperator:
+    enabled: false
+
+  webhook:
+    enabled: false
+
+  crd:
+    enableInstall: true
+
+  policies:
+    monitoring:
+      enabled: false
+
+  # Disable sending stats to Google Analytics
+  analytics:
+    enable: false
+
+  # Number of Jiva replicas, we wont use so it doesnt' matter the replicas or the path
+  jiva:
+    enabled: false
+
+  cstor:
+    enabled: false
+
+  openebs-ndm:
+    enabled: false
+

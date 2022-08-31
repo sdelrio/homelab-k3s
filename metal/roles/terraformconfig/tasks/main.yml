@@ -19,6 +19,7 @@
   loop:
     - cert-manager
     - external-dns
+    - openebs-localpv
   environment:
     KUBECONFIG: "{{ ansible_path }}/kubeconfig.yaml"
   tags: [ "namespaces" ]

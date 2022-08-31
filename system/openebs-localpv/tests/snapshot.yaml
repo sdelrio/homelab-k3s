@@ -1,0 +1,10 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshot
+metadata:
+  name: snapshot-demo
+spec:
+  volumeSnapshotClassName: openebs-hostpath
+  source:
+    persistentVolumeClaimName: demo-vol1-claim
+# https://github.com/k3s-io/k3s/issues/2865
+

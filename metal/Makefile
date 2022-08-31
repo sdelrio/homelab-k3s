@@ -42,7 +42,7 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster and install cilium
-cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cilium install-metallb install-nginx config-cf
+cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cilium install-metallb install-nginx config-cf install-openebs-localpv
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools
@@ -107,6 +107,11 @@ install-nginx-internal:
 install-nginx-external:	## Install nginx-external
 install-nginx-external:
 	@cd ../system/nginx-external && \
+		./apply.sh
+
+install-openebs-localpv:	## Install OpenEBS local PV
+install-openebs-localpv:
+	@cd ../system/openebs-localpv && \
 		./apply.sh
 
 .PHONY: uninstall-k3s

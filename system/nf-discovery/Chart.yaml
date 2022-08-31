@@ -1,0 +1,11 @@
+apiVersion: v2
+name: nf-discovery
+description: "Node Feature Discovery"
+type: application
+version: 0.0.1
+
+dependencies:
+- name: node-feature-discovery
+  repository: https://kubernetes-sigs.github.io/node-feature-discovery/charts
+  version: 0.11.2
+

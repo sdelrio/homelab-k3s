@@ -46,7 +46,7 @@ cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cili
 
 .PHONY: system
 system:		## Install /system folder
-system: install-metallb install-nginx apply-tf install-openebs-localpv install-nf-discovery install-snapshot
+system: install-metallb install-nginx apply-tf install-openebs-localpv install-nf-discovery install-snapshot install-vault
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools
@@ -126,6 +126,19 @@ install-nf-discovery:
 install-snapshot:	## Install external snapshotter
 install-snapshot:
 	@cd ../system/volume-snapshot-crds && \
+		./apply.sh
+
+install-vault:	## Instal Banzai Vault Operator + server
+install-vault:	install-vault-op install-vault-server
+
+install-vault-op:
+install-vault-op:
+	@cd ../system/vault-operator && \
+		./apply.sh
+
+install-vault-serve
+install-vault-server:
+	@cd ../system/vault-server && \
 		./apply.sh
 
 .PHONY: uninstall-k3s

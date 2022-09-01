@@ -21,6 +21,8 @@
     - external-dns
     - openebs-localpv
     - nf-discovery
+    - vault-operator
+    - vault-server
   environment:
     KUBECONFIG: "{{ ansible_path }}/kubeconfig.yaml"
   tags: [ "namespaces" ]

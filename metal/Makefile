@@ -46,7 +46,7 @@ cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cili
 
 .PHONY: system
 system:		## Install /system folder
-system: install-metallb install-nginx apply-tf install-openebs-localpv install-nf-discovery install-snapshot install-vault
+system: install-metallb install-nginx apply-tf install-external-dns install-cert-manager install-openebs-localpv install-nf-discovery install-snapshot install-vault
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools
@@ -103,6 +103,16 @@ apply-tf:
 	@cd ../terraform && \
 		make
 
+install-external-dns:	## Instal External DNS
+install-external-dns:
+	@cd ../system/external-dns && \
+		./apply.sh
+
+install-cert-manager:	## Install cert-manager
+install-cert-manager:
+	@cd ../system/cert-manager && \
+		./apply.sh
+
 install-nginx-internal:	## Install nginx-internal
 install-nginx-internal:
 	@cd ../system/nginx-internal && \
@@ -136,7 +146,7 @@ install-vault-op:
 	@cd ../system/vault-operator && \
 		./apply.sh
 
-install-vault-serve
+install-vault-server:
 install-vault-server:
 	@cd ../system/vault-server && \
 		./apply.sh

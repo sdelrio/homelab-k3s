@@ -1,0 +1,14 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate  # https://cert-manager.io/docs/concepts/certificate/#certificate-lifecycle
+metadata:
+  name: acme-crt
+spec:
+  secretName: acme-crt-secret
+  issuerRef:
+    name: letsencrypt-prod-dns
+    kind: ClusterIssuer
+  dnsNames:
+  - 'lorien.cloud'
+  - '*.lorien.cloud'
+  - '*.svc.lorien.cloud'
+  - '*.k3s.lorien.cloud'

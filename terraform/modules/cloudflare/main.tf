@@ -63,11 +63,11 @@ resource "cloudflare_api_token" "external_dns" {
     }
   }
 
-  condition {
-    request_ip {
-      in = local.public_ips
-    }
-  }
+#  condition {
+#    request_ip {
+#      in = local.public_ips
+#    }
+#  }
 }
 
 resource "kubernetes_secret" "external_dns_token" {
@@ -94,11 +94,11 @@ resource "cloudflare_api_token" "cert_manager" {
     }
   }
 
-  condition {
-    request_ip {
-      in = local.public_ips
-    }
-  }
+#  condition {
+#    request_ip {
+#      in = local.public_ips
+#    }
+#  }
 }
 
 resource "kubernetes_secret" "cert_manager_token" {

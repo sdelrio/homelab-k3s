@@ -24,6 +24,9 @@ ingress-nginx:
 
     ingressClass: nginx-internal
 
+    extraArgs:
+      default-ssl-certificate: "cert-manager/acme-crt-secret"
+
     resources:
       limits:
         memory: 256Mi

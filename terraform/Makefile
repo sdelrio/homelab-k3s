@@ -26,8 +26,14 @@ plan:	## Terraform plan
 plan: .terraform.lock.hcl
 	@KUBE_CONFIG_PATH=$(KUBE_CONFIG_PATH) terraform plan
 
+.PHONY: refresh
+refresh:	## Terraform refresh
+refresh: .terraform.lock.hcl
+	@KUBE_CONFIG_PATH=$(KUBE_CONFIG_PATH) terraform refresh
+
 .PHONY: apply
 apply:	## Terraform apply with -auto-approve
 apply: .terraform.lock.hcl
 	@KUBE_CONFIG_PATH=$(KUBE_CONFIG_PATH) terraform apply -auto-approve
+
 

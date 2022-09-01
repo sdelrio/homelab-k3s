@@ -42,7 +42,7 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster and install cilium
-cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cilium install-metallb install-nginx config-cf install-openebs-localpv install-nf-discovery
+cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cilium install-metallb install-nginx apply-tf install-openebs-localpv install-nf-discovery
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools
@@ -88,15 +88,15 @@ install-nginx: install-nginx-internal install-nginx-external
 
 config-tf:	## Terraform requirements
 config-tf:
-	if [ ! -f ../external/terraform.tfvars ]; then \
+	if [ ! -f ../terraform/terraform.tfvars ]; then \
 		@${PYTHON_BIN_DIR}/ansible-playbook \
 			$(ANSIBLE_EXTRA_ARGS) \
 			playbooks/install/terraformconfig.yml
 	fi
 
-config-cf:	## Create cloudfar api token ConfigMaps
-config-cf:
-	@cd ../external && \
+apply-tf:	## Run terraform: Create cloudflare api token ConfigMaps
+apply-tf:
+	@cd ../terraform && \
 		make
 
 install-nginx-internal:	## Install nginx-internal

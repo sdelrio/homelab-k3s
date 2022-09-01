@@ -42,7 +42,11 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster and install cilium
-cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cilium install-metallb install-nginx apply-tf install-openebs-localpv install-nf-discovery
+cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cilium system
+
+.PHONY: system
+system:		## Install /system folder
+system: install-metallb install-nginx apply-tf install-openebs-localpv install-nf-discovery install-snapshot
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools
@@ -117,6 +121,11 @@ install-openebs-localpv:
 install-nf-discovery:	## Install Node Feature Discovery
 install-nf-discovery:
 	@cd ../system/nf-discovery && \
+		./apply.sh
+
+install-snapshot:	## Install external snapshotter
+install-snapshot:
+	@cd ../system/volume-snapshot-crds && \
 		./apply.sh
 
 .PHONY: uninstall-k3s

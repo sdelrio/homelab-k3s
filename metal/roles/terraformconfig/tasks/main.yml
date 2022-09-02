@@ -23,6 +23,7 @@
     - nf-discovery
     - vault-operator
     - vault-server
+    - external-secrets
   environment:
     KUBECONFIG: "{{ ansible_path }}/kubeconfig.yaml"
   tags: [ "namespaces" ]

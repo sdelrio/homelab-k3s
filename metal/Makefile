@@ -42,11 +42,14 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster and install cilium
-cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cilium system
+cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cilium system platform
 
 .PHONY: system
 system:		## Install /system folder
-system: install-metallb install-nginx apply-tf install-external-dns install-cert-manager install-openebs-localpv install-nf-discovery install-snapshot install-vault
+system: install-metallb install-nginx apply-tf install-external-dns install-cert-manager install-openebs-localpv install-nf-discovery install-snapshot install-vault-op
+
+platform:	## Install /platform floder
+platform: install-vault-opinstall-ext-secrets
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools
@@ -149,6 +152,11 @@ install-vault-op:
 install-vault-server:
 install-vault-server:
 	@cd ../platform/vault-server && \
+		./apply.sh
+
+install-ext-secrets:
+install-ext-secrets:
+	@cd ../platform/external-secrets && \
 		./apply.sh
 
 .PHONY: uninstall-k3s

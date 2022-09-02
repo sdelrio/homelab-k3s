@@ -148,7 +148,7 @@ install-vault-op:
 
 install-vault-server:
 install-vault-server:
-	@cd ../system/vault-server && \
+	@cd ../platform/vault-server && \
 		./apply.sh
 
 .PHONY: uninstall-k3s

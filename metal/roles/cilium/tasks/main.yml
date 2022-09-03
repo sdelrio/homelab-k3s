@@ -1,5 +1,5 @@
 ---
-
+# https://docs.cilium.io/en/v1.10/gettingstarted/k3s/
 - name: Download binary
   ansible.builtin.get_url:
     url: "{{ cilium_url }}"

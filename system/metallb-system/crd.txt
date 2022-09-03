@@ -1,0 +1,7 @@
+customresourcedefinition.apiextensions.k8s.io/addresspools.metallb.io
+customresourcedefinition.apiextensions.k8s.io/bfdprofiles.metallb.io
+customresourcedefinition.apiextensions.k8s.io/bgpadvertisements.metallb.io
+customresourcedefinition.apiextensions.k8s.io/bgppeers.metallb.io
+customresourcedefinition.apiextensions.k8s.io/ipaddresspools.metallb.io
+customresourcedefinition.apiextensions.k8s.io/l2advertisements.metallb.io
+customresourcedefinition.apiextensions.k8s.io/communities.metallb.io

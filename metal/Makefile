@@ -42,18 +42,19 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster and install cilium
-cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cilium system platform
+cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/terraformconfig ansible/install/k3s ansible/install/cilium system platform
 
 .PHONY: system
 system:		## Install /system folder
-system: install-metallb install-nginx apply-tf ins-reloader ins-external-dns install-cert-manager install-openebs-localpv install-nf-discovery install-snapshot install-vault-op install-intel-gpu
+system: system/metallb-system system/nginx apply-tf system/reloader system/external-dns system/cert-manager system/openebs-localpv system/nf-discovery system/volume-snapshot-crds system/vault-operator system/intel-gpu-plugin
 
-platform:	## Install /platform floder
-platform: install-vault-opinstall-ext-secrets
+.PHONY: platform
+platform:	## Install /platform folder
+platform: platform/vault-server platform/external-secrets
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools
-tools: $(SSH_KEY_FILE) requirements-ansible install-tools
+tools: $(SSH_KEY_FILE) requirements-ansible ansible/install/tools
 
 .PHONY: version
 version:
@@ -67,120 +68,36 @@ version:
 versions:	## Show tools versions
 versions:	version
 
-call-apply:
-call-apply:
-	@echo helm apply: $(DIR)
-	@cd ../$(DIR) && ../../scripts/apply.sh
-
-install-k3s:	## Install k3s
-install-k3s:
+ansible/install/%:	## playbook/install
 	@${PYTHON_BIN_DIR}/ansible-playbook \
 		$(ANSIBLE_EXTRA_ARGS) \
-		playbooks/install/k3s.yml
+		playbooks/install/$*.yml
 
-install-cilium:	## Install cilium
-install-cilium:
+ansible/uninstall/%:	## playbooks/uninstall
 	@${PYTHON_BIN_DIR}/ansible-playbook \
 		$(ANSIBLE_EXTRA_ARGS) \
-		playbooks/install/cilium.yml
+		playbooks/uninstall/$*.yml
 
-install-tools:
-install-tools:
-	@${PYTHON_BIN_DIR}/ansible-playbook \
-		$(ANSIBLE_EXTRA_ARGS) \
-		playbooks/install/tools.yml
+system/%:	## Install system/<directory>
+	@echo apply: $@
+	@cd ../system/$* && ../../scripts/apply.sh
 
-install-metallb:	## Install MetalLB
-install-metallb:
-	@cd ../system/metallb-system && \
-		./apply.sh
+platform/%:	## Install platform/<directory>
+	@echo apply: $@
+	@cd ../platform/$* && ../../scripts/apply.sh
 
-install-nginx:	## Install nginx
-install-nginx: install-nginx-internal install-nginx-external
+.PHONY: system/nginx
+system/nginx: ## Install nginx int+ext
+system/nginx: system/nginx-internal system/nginx-external
 
-config-tf:	## Terraform requirements
-config-tf:
-	if [ ! -f ../terraform/terraform.tfvars ]; then \
-		@${PYTHON_BIN_DIR}/ansible-playbook \
-			$(ANSIBLE_EXTRA_ARGS) \
-			playbooks/install/terraformconfig.yml
-	fi
+.PHONY: install-vault
+install-vault: ## Instal Banzai Vault Operator + server
+install-vault: system/vault-operator platform/vault-server
 
 apply-tf:	## Run terraform: Create cloudflare api token ConfigMaps
 apply-tf:
 	@cd ../terraform && \
 		make
-
-ins-external-dns: ## Install External DNS
-ins-external-dns: DIR=system/external-dns
-ins-external-dns: call-apply
-
-install-cert-manager:	## Install cert-manager
-install-cert-manager:
-	@cd ../system/cert-manager && \
-		./apply.sh
-
-install-nginx-internal:	## Install nginx-internal
-install-nginx-internal:
-	@cd ../system/nginx-internal && \
-		./apply.sh
-
-install-nginx-external:	## Install nginx-external
-install-nginx-external:
-	@cd ../system/nginx-external && \
-		./apply.sh
-
-install-openebs-localpv:	## Install OpenEBS local PV
-install-openebs-localpv:
-	@cd ../system/openebs-localpv && \
-		./apply.sh
-
-install-nf-discovery:	## Install Node Feature Discovery
-install-nf-discovery:
-	@cd ../system/nf-discovery && \
-		./apply.sh
-
-install-snapshot:	## Install external snapshotter
-install-snapshot:
-	@cd ../system/volume-snapshot-crds && \
-		./apply.sh
-
-install-vault:	## Instal Banzai Vault Operator + server
-install-vault:	install-vault-op install-vault-server
-
-install-vault-op:
-install-vault-op:
-	@cd ../system/vault-operator && \
-		./apply.sh
-
-install-vault-server:
-install-vault-server:
-	@cd ../platform/vault-server && \
-		./apply.sh
-
-install-ext-secrets:
-install-ext-secrets:
-	@cd ../platform/external-secrets && \
-		./apply.sh
-
-install-intel-gpu:	## Instal Intel GPU plugin
-install-intel-gpu:
-	@cd ../system/intel-gpu-plugin && \
-		./apply.sh
-
-ins-reloader:
-ins-reloader: DIR=system/reloader
-ins-reloader: call-apply
-
-#	@cd ../system/reloader && \
-#		../../scripts/apply.sh
-
-.PHONY: uninstall-k3s
-uninstall-k3s:	## Uninstall k3s
-uninstall-k3s: $(SSH_KEY_FILE) requirements-ansible
-	${PYTHON_BIN_DIR}/ansible-playbook \
-		$(ANSIBLE_EXTRA_ARGS) \
-		playbooks/uninstall/k3s.yml
 
 .PHONY: console
 console:	## Ansible Console
@@ -188,4 +105,9 @@ console: $(SSH_KEY_FILE) requirements
 	${PYTHON_BIN_DIR}/ansible-console \
 		$(ANSIBLE_EXTRA_ARGS) \
 		--become
+
+gitops-root/%:
+	@echo "@: $@"
+	@echo "*: $*"
+
 

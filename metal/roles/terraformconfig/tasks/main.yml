@@ -10,7 +10,7 @@
 # Create namespaces because the helm template doesn't create them and we will need
 # to create secrets with terraform to store cloudlfare API tokens
 
-- name: Ensure required namespaces exist
+- name: Ensure required namespaces exist to store secret
   kubernetes.core.k8s:
     api_version: v1
     kind: Namespace
@@ -19,12 +19,6 @@
   loop:
     - cert-manager
     - external-dns
-    - openebs-localpv
-    - nf-discovery
-    - vault-operator
-    - vault-server
-    - external-secrets
-    - intel-gpu-plugin
   environment:
     KUBECONFIG: "{{ ansible_path }}/kubeconfig.yaml"
   tags: [ "namespaces" ]

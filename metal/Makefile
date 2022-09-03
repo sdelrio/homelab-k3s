@@ -46,7 +46,7 @@ cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cili
 
 .PHONY: system
 system:		## Install /system folder
-system: install-metallb install-nginx apply-tf install-external-dns install-cert-manager install-openebs-localpv install-nf-discovery install-snapshot install-vault-op install-intel-gpu
+system: install-metallb install-nginx apply-tf ins-reloader ins-external-dns install-cert-manager install-openebs-localpv install-nf-discovery install-snapshot install-vault-op install-intel-gpu
 
 platform:	## Install /platform floder
 platform: install-vault-opinstall-ext-secrets
@@ -66,6 +66,11 @@ version:
 
 versions:	## Show tools versions
 versions:	version
+
+call-apply:
+call-apply:
+	@echo helm apply: $(DIR)
+	@cd ../$(DIR) && ../../scripts/apply.sh
 
 install-k3s:	## Install k3s
 install-k3s:
@@ -106,10 +111,9 @@ apply-tf:
 	@cd ../terraform && \
 		make
 
-install-external-dns:	## Instal External DNS
-install-external-dns:
-	@cd ../system/external-dns && \
-		./apply.sh
+ins-external-dns: ## Install External DNS
+ins-external-dns: DIR=system/external-dns
+ins-external-dns: call-apply
 
 install-cert-manager:	## Install cert-manager
 install-cert-manager:
@@ -163,6 +167,13 @@ install-intel-gpu:	## Instal Intel GPU plugin
 install-intel-gpu:
 	@cd ../system/intel-gpu-plugin && \
 		./apply.sh
+
+ins-reloader:
+ins-reloader: DIR=system/reloader
+ins-reloader: call-apply
+
+#	@cd ../system/reloader && \
+#		../../scripts/apply.sh
 
 .PHONY: uninstall-k3s
 uninstall-k3s:	## Uninstall k3s

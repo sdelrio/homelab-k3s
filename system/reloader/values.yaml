@@ -1,0 +1,19 @@
+reloader:
+  nameOverride: reloader
+
+  fullnameOverride: reloader
+
+  reloader:
+    deployment:
+      image:
+        name: ghcr.io/k8s-at-home/reloader
+    podMonitor:
+      enabled: false
+      namespace: monitoring
+
+  resources:
+    requests:
+      cpu: 15m
+      memory: 64M
+    limits:
+      memory: 64M

@@ -24,6 +24,7 @@
     - vault-operator
     - vault-server
     - external-secrets
+    - intel-gpu-plugin
   environment:
     KUBECONFIG: "{{ ansible_path }}/kubeconfig.yaml"
   tags: [ "namespaces" ]

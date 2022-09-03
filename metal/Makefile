@@ -46,7 +46,7 @@ cluster: $(SSH_KEY_FILE) requirements-ansible config-tf install-k3s install-cili
 
 .PHONY: system
 system:		## Install /system folder
-system: install-metallb install-nginx apply-tf install-external-dns install-cert-manager install-openebs-localpv install-nf-discovery install-snapshot install-vault-op
+system: install-metallb install-nginx apply-tf install-external-dns install-cert-manager install-openebs-localpv install-nf-discovery install-snapshot install-vault-op install-intel-gpu
 
 platform:	## Install /platform floder
 platform: install-vault-opinstall-ext-secrets
@@ -157,6 +157,11 @@ install-vault-server:
 install-ext-secrets:
 install-ext-secrets:
 	@cd ../platform/external-secrets && \
+		./apply.sh
+
+install-intel-gpu:	## Instal Intel GPU plugin
+install-intel-gpu:
+	@cd ../system/intel-gpu-plugin && \
 		./apply.sh
 
 .PHONY: uninstall-k3s

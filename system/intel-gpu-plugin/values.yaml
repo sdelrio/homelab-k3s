@@ -1,0 +1,24 @@
+intel-gpu-plugin:
+  image:
+    repository: intel/intel-gpu-plugin
+    tag: 0.24.0
+    pullPolicy: IfNotPresent
+  args:
+    - -shared-dev-num
+    - "2"
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: feature.node.kubernetes.io/intel-gpu
+                operator: In
+                values:
+                  - "true"
+  resources:
+    requests:
+      cpu: 15m
+      memory: 64M
+    limits:
+      cpu: 15m
+      memory: 64M

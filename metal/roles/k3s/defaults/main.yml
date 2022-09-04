@@ -14,3 +14,4 @@ k3s_server_config:
   secrets-encryption: true
   disable-network-policy: true   # Disable default CNI to install Cillium eBPF later
   flannel-backend: none   # Disable default CNI to install Cillium eBPF later
+  disable-kube-proxy: true  # we will replace it with cilium https://github.com/k3s-io/k3s/issues/2296

@@ -1,4 +1,4 @@
-system/**/charts/
-system/**/Chart.lock
-platform/**/charts/
-platform/**/Chart.lock
+**/**/charts/
+**/**/Chart.lock
+**/**/**/charts/
+**/**/**/Chart.lock

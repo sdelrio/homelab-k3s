@@ -4,5 +4,5 @@
   vars:
     ansible_path: "{{ playbook_dir }}/../.."
   roles:
-    - cilium
+    - cilium-validate
 

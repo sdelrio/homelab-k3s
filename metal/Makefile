@@ -6,6 +6,7 @@ PYTHON_BIN_DIR := $(VENV_BASE)/bin
 
 SSH_KEY_FILE ?= ~/.ssh/DEMOid_ed25519
 ANSIBLE_EXTRA_ARGS ?=
+BASE_DIR := $(shell cd .. && pwd)
 
 default: help
 
@@ -41,16 +42,20 @@ requirements-ansible: requirements
 	@${PYTHON_BIN_DIR}/ansible-galaxy collection install -r requirements.yml > /dev/null
 
 .PHONY: cluster
-cluster:	## Create k3s cluster and install cilium
-cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/terraformconfig ansible/install/k3s ansible/install/cilium system platform
+cluster:	## Create k3s cluster and prepare terraforom config
+cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/terraformconfig ansible/install/k3s  system platform
 
 .PHONY: system
 system:		## Install /system folder
-system: system/metallb-system system/nginx apply-tf system/reloader system/external-dns system/cert-manager system/openebs-localpv system/nf-discovery system/volume-snapshot-crds system/vault-operator system/intel-gpu-plugin
+system: system-network ansible/install/cilium-validate system-storage system-external system-internal
+system-network: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/network/*/))))
+system-external: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/external/*/))))
+system-internal: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/internal/*/))))
+system-storage: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/storage/*/))))
 
 .PHONY: platform
 platform:	## Install /platform folder
-platform: platform/vault-server platform/external-secrets
+platform: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../platform/*/))))  
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools
@@ -86,6 +91,16 @@ platform/%:	## Install platform/<directory>
 	@echo apply: $@
 	@cd ../platform/$* && ../../scripts/apply.sh
 
+apply-manifest/%:	## apply manifest/<directory>
+	@echo apply: $@
+	@echo cd $*
+	@cd $* && $(BASE_DIR)/scripts/apply.sh
+
+delete-manifest/%:	## delete manifest/<directory>
+	@echo apply: $@
+	@echo $(BASE_DIR)
+	@cd $* && $(BASE_DIR)/scripts/delete.sh
+
 .PHONY: system/nginx
 system/nginx: ## Install nginx int+ext
 system/nginx: system/nginx-internal system/nginx-external
@@ -99,15 +114,11 @@ apply-tf:
 	@cd ../terraform && \
 		make
 
+
 .PHONY: console
 console:	## Ansible Console
 console: $(SSH_KEY_FILE) requirements
 	${PYTHON_BIN_DIR}/ansible-console \
 		$(ANSIBLE_EXTRA_ARGS) \
 		--become
-
-gitops-root/%:
-	@echo "@: $@"
-	@echo "*: $*"
-
 

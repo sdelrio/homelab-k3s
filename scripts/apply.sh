@@ -3,7 +3,7 @@
 NS=${NS:-`basename "$PWD"`}
 DEPLOY=${DEPLOY:-`basename "$PWD"`}
 CRD_FILE=${CRD_FILE:-crd.txt}
-DEBUG=${DEBUG:-true}
+DEBUG=${DEBUG:-false}
 
 echo namespace: ${NS}
 echo deployment: ${DEPLOY}
@@ -15,21 +15,22 @@ else
 fi
 
 if [ -f kustomization.yaml ]; then
-    if [ "${DEBUG}" == "true" ]; then
-        kustomize build
-    else
-        kustomize build | kubectl apply -f -
-    fi
-fi
 
-if [ -f Chart.yaml ]; then
+    if [ "${DEBUG}" == "true" ]; then
+        kustomize build --enable-helm
+    else
+        kustomize build --enable-helm | kubectl apply -f -
+    fi
+
+elif [ -f Chart.yaml ]; then
+
     if [ ! -d charts ]; then
         echo "Building depencency..."
         helm dependency build 
     fi
 
     if [ "${DEBUG}" == "true" ]; then
-        helm template \
+        echo helm template \
         --include-crds \
         --namespace ${NS} ${DEPLOY} .
     else

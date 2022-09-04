@@ -16,31 +16,9 @@
     creates: "/usr/local/bin/cilium"
     remote_src: true
 
-- name: Check if secrets already created
-  ansible.builtin.command:
-    cmd: k3s kubectl get secret hubble-server-certs -n kube-system
-  environment:
-    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
-  register: hubble_secret
-  changed_when: False
-  ignore_errors: yes
-
-- name: Install command
-  ansible.builtin.command:
-    cmd: cilium install -n cilium
-  environment:
-    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
-  when: hubble_secret.rc != 0
-  register: install_cilium
-
-- name: Show install output
-  debug:
-    var: install_cilium.stdout
-  when: hubble_secret.rc != 0
-
 - name: Validate install
   ansible.builtin.command:
-    cmd: cilium status --wait
+    cmd: cilium status -n cilium --wait
   environment:
     KUBECONFIG: /etc/rancher/k3s/k3s.yaml
   register: validate_cilium

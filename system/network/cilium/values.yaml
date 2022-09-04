@@ -1,0 +1,100 @@
+cilium:
+# Cilium tool default values:
+# ℹ️  helm template --namespace cilium cilium cilium/cilium --version 1.12.0 \
+# --set cluster.id=0,cluster.name=default,encryption.nodeEncryption=false,kubeProxyReplacement=disabled,operator.replicas=1,serviceAccounts.cilium.name=cilium,serviceAccounts.operator.name=cilium-operator,tunnel=vxlan
+
+  cluster:
+    id: 0
+    name: "default"
+
+  # https://docs.cilium.io/en/v1.12/gettingstarted/kubeproxy-free/#kube-proxy-hybrid-modes
+  # -- Configure the kube-proxy replacement in Cilium BPF datapath
+  # Valid options are "disabled", "partial", "strict".
+  # ref: https://docs.cilium.io/en/stable/gettingstarted/kubeproxy-free/
+  kubeProxyReplacement: "strict"
+  # -- healthz server bind address for the kube-proxy replacement.
+  # To enable set the value to '0.0.0.0:10256' for all ipv4
+  # addresses and this '[::]:10256' for all ipv6 addresses.
+  # By default ("") it is disabled.
+  kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
+
+  # -- Enable Layer 7 network policy.
+  l7Proxy: true   # default: true
+
+  # kubectl get nodes -o jsonpath='{.items[*].spec.podCIDR}'
+  ipv4NativeRoutingCIDR: 10.42.0.0/24
+
+  # Since there is no CNI installed we cannot use the default svc 10.43.0.1:443
+  k8sServiceHost: "192.168.1.203"
+  k8sServicePort: 6443
+
+  loadBalancer:
+    # -- algorithm is the name of the load balancing algorithm for backend
+    # selection e.g. random or maglev
+    algorithm: "maglev"
+    # -- mode is the operation mode of load balancing for remote backends
+    # e.g. snat, dsr, hybrid
+    mode: "dsr"
+
+  # Possible values:
+  #   - disabled
+  #   - vxlan (default)
+  #   - geneve
+  tunnel: "disabled"
+
+  autoDirectNodeRoutes: true
+
+  endpointRoutes:
+    enabled: true
+
+  ipam:
+    # -- Configure IP Address Management mode.
+    mode: "kubernetes"
+
+  operator:
+    replicas: 1   # Default 2
+    rollOutPods: true
+
+  containerRuntime:
+    # -- Enables specific integrations for container runtimes.
+    # Supported values:
+    # - containerd
+    # - crio
+    # - docker
+    # - none
+    # - auto (automatically detect the container runtime)
+    integration: containerd
+
+  hubble:
+    enabled: true
+    serviceMonitor:
+      enabled: false
+      labels: {}
+      annotations: {}
+    metrics:
+      enabled:
+        - dns:query;ignoreAAAA
+        - drop
+        - tcp
+        - flow
+        - port-distribution
+        - icmp
+        - http
+    relay:
+      enabled: true
+      rollOutPods: true
+    ui:
+      enabled: true
+      rollOutPods: true
+      ingress:
+        enabled: true
+        className: nginx-internal
+        annotations:
+          hajimari.io/enable: "true"
+          hajimari.io/appName: hubble
+          hajimari.io/icon: lan
+        hosts:
+          - &host hubble.k3s.lorien.cloud
+        tls:
+          - hosts:
+              - *host

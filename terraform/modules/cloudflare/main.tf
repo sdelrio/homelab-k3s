@@ -25,7 +25,7 @@ resource "cloudflare_record" "svc_wildcard" {
   zone_id = data.cloudflare_zone.zone.id
   type    = "CNAME"
   name    = "*.svc"
-  value   = "svc.lorien.cloud."
+  value   = "svc.lorien.cloud"
 # Leave External-DNS to create svc.lorien.cloud entry
   proxied = false
   ttl     = 1 # Auto
@@ -45,7 +45,7 @@ resource "cloudflare_record" "k3s_wildcard" {
   zone_id = data.cloudflare_zone.zone.id
   type    = "CNAME"
   name    = "*.k3s"
-  value   = "k3s.lorien.cloud."
+  value   = "k3s.lorien.cloud"
   proxied = false
   ttl     = 1 # Auto
 }

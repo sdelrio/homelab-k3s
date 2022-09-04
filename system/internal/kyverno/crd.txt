@@ -1,0 +1,8 @@
+customresourcedefinition.apiextensions.k8s.io/clusterpolicies.kyverno.io
+customresourcedefinition.apiextensions.k8s.io/clusterpolicyreports.wgpolicyk8s.io
+customresourcedefinition.apiextensions.k8s.io/clusterreportchangerequests.kyverno.io
+customresourcedefinition.apiextensions.k8s.io/generaterequests.kyverno.io
+customresourcedefinition.apiextensions.k8s.io/policies.kyverno.io
+customresourcedefinition.apiextensions.k8s.io/policyreports.wgpolicyk8s.io
+customresourcedefinition.apiextensions.k8s.io/reportchangerequests.kyverno.io
+customresourcedefinition.apiextensions.k8s.io/updaterequests.kyverno.io

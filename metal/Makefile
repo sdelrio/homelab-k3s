@@ -4,7 +4,7 @@ VENV_BASE := $(WORKON_HOME)/$(APP)
 PYTHON := $(VENV_BASE)/bin/python3
 PYTHON_BIN_DIR := $(VENV_BASE)/bin
 
-SSH_KEY_FILE ?= ~/.ssh/DEMOid_ed25519
+SSH_KEY_FILE ?= ~/.ssh/id_ed25519
 ANSIBLE_EXTRA_ARGS ?=
 BASE_DIR := $(shell cd .. && pwd)
 
@@ -21,13 +21,13 @@ help:
 	@echo ""
 
 .PHONY: venv
-venv:	## Create Virtual ENV
+venv:	# Create Virtual ENV
 	@if [ ! -d "$(VENV_BASE)" ]; then \
 		python3 -m venv $(VENV_BASE); \
 	fi
 
 .PHONY: requirements
-requirements:	## Install PIP dependencies
+requirements:	# Install PIP dependencies
 requirements: venv
 	@echo Upgrade PIP
 	@$(PYTHON) -m pip install --upgrade pip > /dev/null
@@ -35,18 +35,18 @@ requirements: venv
 	@${PYTHON} -m pip install -r requirements.txt > /dev/null
 
 .PHONY: requirements-ansible
-requirements-ansible:	## Install Ansiblie collections requirements
+requirements-ansible:	# Install Ansiblie collections requirements
 requirements-ansible: requirements
 	@echo Install ansible-galaxy collections requirements
 	@${PYTHON_BIN_DIR}/ansible-galaxy install -r requirements.yml > /dev/null
 	@${PYTHON_BIN_DIR}/ansible-galaxy collection install -r requirements.yml > /dev/null
 
 .PHONY: cluster
-cluster:	## Create k3s cluster and prepare terraforom config
-cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/terraformconfig ansible/install/k3s  system platform
+cluster:	## Create k3s cluster, terraform config+apply and install all manifests
+cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/terraformconfig ansible/install/k3s system platform
 
 .PHONY: system
-system:		## Install /system folder
+system:		## Install /system folder manifests
 system: system-network ansible/install/cilium-validate system-storage system-external system-internal
 system-network: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/network/*/))))
 system-external: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/external/*/))))
@@ -54,11 +54,11 @@ system-internal: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/i
 system-storage: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/storage/*/))))
 
 .PHONY: platform
-platform:	## Install /platform folder
+platform:	## Install /platform folder manifests
 platform: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../platform/*/))))  
 
 .PHONY: tools
-tools:	## Install k9s and nerdctl tools
+tools:	## Install k9s and nerdctl tools in nodes
 tools: $(SSH_KEY_FILE) requirements-ansible ansible/install/tools
 
 .PHONY: version
@@ -70,26 +70,23 @@ version:
 	@echo "* PIP:"
 	@$(PYTHON_BIN_DIR)/pip list
 
-versions:	## Show tools versions
+versions:	# Show tools versions (ansible & pip)
 versions:	version
 
-ansible/install/%:	## playbook/install
+ansible/install/%:	## playbooks/install/<name> (without .yml)
 	@${PYTHON_BIN_DIR}/ansible-playbook \
 		$(ANSIBLE_EXTRA_ARGS) \
 		playbooks/install/$*.yml
 
-ansible/uninstall/%:	## playbooks/uninstall
+ansible/uninstall/%:	## playbooks/uninstall/<name> (without .yml)
 	@${PYTHON_BIN_DIR}/ansible-playbook \
 		$(ANSIBLE_EXTRA_ARGS) \
 		playbooks/uninstall/$*.yml
 
-system/%:	## Install system/<directory>
-	@echo apply: $@
-	@cd ../system/$* && ../../scripts/apply.sh
-
-platform/%:	## Install platform/<directory>
-	@echo apply: $@
-	@cd ../platform/$* && ../../scripts/apply.sh
+apply-tf:	## Run terraform: Create cloudflare api token ConfigMaps
+apply-tf:
+	@cd ../terraform && \
+		make
 
 apply-manifest/%:	## apply manifest/<directory>
 	@echo apply: $@
@@ -102,21 +99,11 @@ delete-manifest/%:	## delete manifest/<directory>
 	@cd $* && $(BASE_DIR)/scripts/delete.sh
 
 .PHONY: system/nginx
-system/nginx: ## Install nginx int+ext
-system/nginx: system/nginx-internal system/nginx-external
-
-.PHONY: install-vault
-install-vault: ## Instal Banzai Vault Operator + server
-install-vault: system/vault-operator platform/vault-server
-
-apply-tf:	## Run terraform: Create cloudflare api token ConfigMaps
-apply-tf:
-	@cd ../terraform && \
-		make
-
+system/nginx:
+system/nginx: apply-manifest/../system/nginx-internal apply-manifest/../system/nginx-external
 
 .PHONY: console
-console:	## Ansible Console
+console:	# Ansible Console
 console: $(SSH_KEY_FILE) requirements
 	${PYTHON_BIN_DIR}/ansible-console \
 		$(ANSIBLE_EXTRA_ARGS) \

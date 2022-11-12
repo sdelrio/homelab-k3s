@@ -1,7 +1,6 @@
 # Cluster Playbook
 ---
-
-- name: Create k3s cluster
+- name: Instal linbit drbd9 modules
   hosts: nodes
   vars:
     ansible_path: "{{ playbook_dir }}/../.."

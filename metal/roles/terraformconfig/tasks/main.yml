@@ -27,6 +27,6 @@
 - name: Render environment file
   template:
     src: terraform.tfvars.j2
-    dest: "{{ ansible_path }}/../external/terraform.tfvars"
+    dest: "{{ ansible_path }}/../terraform/terraform.tfvars"
     mode: 0640
   tags: [ "terraform" ]

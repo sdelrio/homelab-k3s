@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-claim-xfs-1
+spec:
+  storageClassName: linstor-xfs
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-claim-1
+spec:
+  storageClassName: linsor-csi-lvm-thin-r1
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-claim-2
+spec:
+  storageClassName: linsor-csi-lvm-thin-r1
+  #volumeName: pvc-7a266a10-08b7-4a57-83cb-94b869196232
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-claim-3
+spec:
+  storageClassName: linsor-csi-lvm-thin-r1
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

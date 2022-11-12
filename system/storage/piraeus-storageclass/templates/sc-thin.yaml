@@ -1,0 +1,24 @@
+{{ $pool := .Values.pool }}
+{{ range $fs := $.Values.filesystems }}
+{{ range $replica := $.Values.replicas }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-basic-configuration-and-deployment
+  name: "linstor-{{ $fs }}-r{{ $replica }}"
+provisioner: linstor.csi.linbit.com
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-sc-parameters
+  autoPlace: "{{ $replica }}"
+  # LINSTOR will provision volumes from the drbdpool storage pool configured
+  # On the satellite nodes in the LINSTOR cluster specified in the plug-in's deployment
+  storagePool: "{{ $pool }}"
+  resourceGroup: "linstor-{{ $fs }}-r{{ $replica }}" 
+  # Setting a fstype is required for "fsGroup" permissions to work correctly.
+  # Currently supported: xfs/ext4
+  csi.storage.k8s.io/fstype: {{ $fs }}
+{{- end }}
+{{- end }}

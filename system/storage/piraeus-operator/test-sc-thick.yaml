@@ -1,0 +1,38 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "linsor-csi-lvm-thick-r1"
+provisioner: linstor.csi.linbit.com
+parameters:
+  allowRemoteVolumeAccess: "false"
+  autoPlace: "1"
+  storagePool: "lvm-thick"
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "linsor-csi-lvm-thick-r2"
+provisioner: linstor.csi.linbit.com
+parameters:
+  allowRemoteVolumeAccess: "false"
+  autoPlace: "2"
+  storagePool: "lvm-thick"
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "linsor-csi-lvm-thick-r3"
+provisioner: linstor.csi.linbit.com
+parameters:
+  allowRemoteVolumeAccess: "false"
+  autoPlace: "3"
+  storagePool: "lvm-thick"
+reclaimPolicy: Retain
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer

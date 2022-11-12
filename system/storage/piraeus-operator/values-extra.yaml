@@ -1,0 +1,45 @@
+# https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-overview
+etcd:
+  enabled: false # https://github.com/piraeusdatastore/piraeus-operator/blob/master/doc/k8s-backend.md
+stork:
+  enabled: false
+csi:
+  enabled: true
+  enableTopology: true  # We can use more intelligent placdement of our volumens and pods
+operator:
+  replicas: 1 # <- number of replicas for the operator deployment
+  controller:
+    dbConnectionURL: k8s # https://github.com/piraeusdatastore/piraeus-operator/blob/master/doc/k8s-backend.md
+  satelliteSet:
+    enabled: true
+    # Build and load DRBD using the Kernel Module Injection Image 
+    kernelModuleInjectionImage: quay.io/piraeusdatastore/drbd9-jammy
+    
+    # Selects the source for the DRBD kernel module: None|Compile|ShippedModules|DepsOnly
+    #  on ubuntu, you can install drbd by PPA https://launchpad.net/~linbit/+archive/ubuntu/linbit-drbd9-stack
+    kernelModuleInjectionMode: Compile
+   
+    # https://piraeus.io/site/docs/storage 
+    storagePools:
+      #lvmPools:
+      #- name: lvm-thick
+      #  volumeGroup: drbdpool
+      #  devicePaths:
+      #    - /dev/loop0
+      lvmThinPools:
+      - name: lvm-thin
+        thinVolume: thinpool
+        #volumeGroup: []  ## You can use the devicePaths: [] option to let LINSTOR automatically prepare devices for the pool
+        volumeGroup: linstor_thinpool  # NOTE: The volume group created by LINSTOR for LVMTHIN pools will always follow the scheme "linstor_$THINPOOL".
+        devicePaths:
+          - /dev/loop0
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane # New value since Kubernetes 1.24
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+haController:
+  enabled: false  # Optionan component, failover of pods quicker if enabled when having 3+ nodes
+

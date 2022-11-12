@@ -1,0 +1,5 @@
+global:
+  setSecurityContext: false
+etcd:
+  podsecuritycontext:
+    supplementalGroups: [1000]

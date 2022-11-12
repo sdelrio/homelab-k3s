@@ -1,0 +1,9 @@
+filesystems:
+  - xfs
+  - ext4
+
+replicas:
+  - 1
+  - 2
+  - 3
+

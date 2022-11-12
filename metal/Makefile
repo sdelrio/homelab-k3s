@@ -47,7 +47,7 @@ cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/terraformconfig an
 
 .PHONY: system
 system:		## Install /system folder manifests
-system: system-network ansible/install/cilium-validate system-storage system-external system-internal
+system: system-network ansible/install/cilium-validate ansible/install/loop-device system-storage system-external system-internal
 system-network: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/network/*/))))
 system-external: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/external/*/))))
 system-internal: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/internal/*/))))

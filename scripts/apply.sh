@@ -3,7 +3,10 @@
 NS=${NS:-`basename "$PWD"`}
 DEPLOY=${DEPLOY:-`basename "$PWD"`}
 CRD_FILE=${CRD_FILE:-crd.txt}
+WAIT_FILE=${WAIT_FILE:-wait.txt}
+TIMEOUT=60s
 DEBUG=${DEBUG:-false}
+HELM_EXTRA=${HELM_EXTRA:-}
 
 echo namespace: ${NS}
 echo deployment: ${DEPLOY}
@@ -29,13 +32,19 @@ elif [ -f Chart.yaml ]; then
         helm dependency build 
     fi
 
+    if [ -f values-extra.yaml ]; then
+        HELM_EXTRA="-f values-extra.yaml"
+    fi
+
     if [ "${DEBUG}" == "true" ]; then
-        echo helm template \
+         helm template \
         --include-crds \
+        ${HELM_EXTRA} \
         --namespace ${NS} ${DEPLOY} .
     else
         helm template \
         --include-crds \
+        ${HELM_EXTRA} \
         --namespace ${NS} \
         ${DEPLOY} . \
         | kubectl -n ${NS} apply -f -
@@ -57,10 +66,34 @@ if [ -f ${CRD_FILE} ]; then
     done <<< $(cat ${CRD_FILE})
 
     if [ "${DEBUG}" == "true" ]; then
-        echo kubectl -n ${NS} wait --timeout=60s --for condition=Established \
+        echo kubectl -n ${NS} wait --timeout=${TIMEOUT} --for condition=Established \
         ${crd}
     else
-        kubectl -n ${NS} wait --timeout=60s --for condition=Established \
+        kubectl -n ${NS} wait --timeout=${TIMEOUT} --for condition=Established \
         ${crd}
     fi
 fi
+
+
+if [ -f ${WAIT_FILE} ]; then
+    pattern="^timeout=[0-9]+(m|s)"
+    while IFS= read -r line
+    do
+      # take action on $line #
+      if [[ $line =~ $pattern ]]; then
+        arrIN=(${line//=/ })
+        TIMEOUT=${arrIN[1]}
+      else
+        wait="$wait $line"
+      fi
+    done <<< $(cat ${WAIT_FILE})
+
+    if [ "${DEBUG}" == "true" ]; then
+        echo kubectl -n ${NS} wait --timeout=${TIMEOUT} --for condition=Established \
+        ${wait} --all
+    else
+        kubectl -n ${NS} wait --timeout=${TIMEOUT} --for condition=Established \
+        ${wait} --all
+    fi
+fi
+

@@ -1,0 +1,31 @@
+- name: "Piraeus DRBD-9 repository and install its signing key on Ubuntu target"
+  block:
+  - name: Download key
+    ansible.builtin.get_url:
+      url: "https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xcc1b5a793c04bb3905ad837734893610ceaa9512"
+      #dest: /usr/share/keyrings/linbit-drbd9-stack.gpg
+      # Adding deb entry to /etc/apt/sources.list.d/linbit-ubuntu-linbit-drbd9-stack-jammy.list
+      # Adding disabled deb-src entry to /etc/apt/sources.list.d/linbit-ubuntu-linbit-drbd9-stack-jammy.list
+      # Adding key to /etc/apt/trusted.gpg.d/linbit-ubuntu-linbit-drbd9-stack.gpg with fingerprint CC1B5A793C04BB3905AD837734893610CEAA9512
+      dest: "/etc/apt/trusted.gpg.d/linbit-ubuntu-linbit-drbd9-stack.gpg"
+
+  - name: Add source
+    ansible.builtin.apt_repository:
+      #repo: "deb [arch=arm64, signed-by=/usr/share/keyrings/linbit-drbd9-stack.gpg] https://ppa.launchpadcontent.net/linbit/linbit-drbd9-stack/ubuntu {{ ansible_distribution_release }} main"
+      #repo: "deb [arch=arm64] https://ppa.launchpadcontent.net/linbit/linbit-drbd9-stack/ubuntu {{ ansible_distribution_release }} main"
+      repo: "deb https://ppa.launchpadcontent.net/linbit/linbit-drbd9-stack/ubuntu {{ ansible_distribution_release }} main"
+      state: present
+
+  - name: update cache
+    ansible.builtin.apt:
+      update_cache: true
+      cache_valid_time: 604800  # 1 week
+
+- name: Install drbd-9
+  ansible.builtin.apt:
+    update_cache: yes
+    cache_valid_time: 604800  # 1 week
+    name:
+      - drbd=9.1.*
+    state: present
+

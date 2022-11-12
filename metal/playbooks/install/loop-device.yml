@@ -1,0 +1,9 @@
+# Cluster Playbook
+---
+
+- name: "Create loop device cluster"
+  hosts: loopdevice
+  vars:
+    ansible_path: "{{ playbook_dir }}/../.."
+  roles:
+    - loop-device

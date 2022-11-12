@@ -1,0 +1,24 @@
+- name: "Create loop device"
+  ansible.builtin.command: "fallocate -l {{ loop_file_size }} {{ loop_file }}"
+  args:
+    creates: "{{ loop_file }}"
+
+- name: "Update rc.local"
+  ansible.builtin.template:
+    src: rc.local.j2
+    dest: /etc/rc.local1
+    mode: '0755'
+
+- name: "Create rc-local service"
+  ansible.builtin.copy:
+    src: rc-local.service
+    dest: /etc/systemd/system/rc-local.service
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: "Enable rc-local service"
+  ansible.builtin.systemd:
+    name: rc-local.service
+    enabled: yes
+    state: started

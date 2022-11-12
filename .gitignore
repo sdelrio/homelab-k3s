@@ -2,3 +2,4 @@
 **/**/Chart.lock
 **/**/**/charts/
 **/**/**/Chart.lock
+!system/storage/piraeus-operator/**

@@ -1,0 +1,3 @@
+loop_file: '/deviceloopfile.img'
+loop_file_size: '1G'
+loop_device: '/dev/loop0'

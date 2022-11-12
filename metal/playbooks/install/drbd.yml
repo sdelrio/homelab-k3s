@@ -1,0 +1,9 @@
+# Cluster Playbook
+---
+
+- name: Create k3s cluster
+  hosts: nodes
+  vars:
+    ansible_path: "{{ playbook_dir }}/../.."
+  roles:
+    - linbit-drbd9-stack

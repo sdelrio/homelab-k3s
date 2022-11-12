@@ -1,6 +1,5 @@
 ---
-
-cilium_version: "0.12.1"
+cilium_version: "0.12.3"
 cilium_arch: "amd64"
 cilium_url: "https://github.com/cilium/cilium-cli/releases/download/v{{ cilium_version }}/cilium-linux-{{ cilium_arch }}.tar.gz"
 

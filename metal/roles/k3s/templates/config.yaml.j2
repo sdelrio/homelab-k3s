@@ -1,6 +1,7 @@
-
 {% if inventory_hostname == groups['kube_control_plane'][0] %}
+{% if k3s_etcd %}
 cluster-init: true
+{%- endif %}
 {% else %}
 server: https://{{ hostvars[groups['kube_control_plane'][0]].ansible_hostname }}:6443
 {% endif %}

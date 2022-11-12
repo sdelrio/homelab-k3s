@@ -4,7 +4,7 @@
     that:
       - ansible_path is defined
 
-- name: Download binary
+- name: "Download binary for {{ k3s_version }}"
   ansible.builtin.get_url:
     url: https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/{{ k3s_binary }}
     checksum: sha256:https://github.com/k3s-io/k3s/releases/download/{{ k3s_version }}/sha256sum-{{ k3s_arch }}.txt
@@ -12,6 +12,7 @@
     owner: root
     group: root
     mode: 0755
+  notify: restart k3s
 
 - name: Link binary
   ansible.builtin.file:
@@ -21,15 +22,19 @@
     owner: root
     group: root
     mode: 0755
+  notify: restart k3s
 
-- name: Link binary kubectl
+- name: Link binaries to k3s to get kubectl and crictl
   ansible.builtin.file:
     src: "/usr/local/bin/k3s"
-    dest: "/usr/local/bin/kubectl"
+    dest: "/usr/local/bin/{{ item }}"
     state: link
     owner: root
     group: root
     mode: 0755
+  loop:
+    - kubectl
+    - crictl
 
 - name: Ensure config directories exist
   ansible.builtin.file:

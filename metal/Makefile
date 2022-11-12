@@ -43,7 +43,7 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster, terraform config+apply and install all manifests
-cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/k3s ansible/install/terraformconfig system platform
+cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/k3s ansible/install/terraformconfig apply-tf system platform
 
 .PHONY: system
 system:		## Install /system folder manifests
@@ -76,6 +76,12 @@ versions:	version
 ansible/install/%:	## playbooks/install/<name> (without .yml)
 	@${PYTHON_BIN_DIR}/ansible-playbook \
 		$(ANSIBLE_EXTRA_ARGS) \
+		playbooks/install/$*.yml
+
+ansible/diff/%:	## playbooks/install/<name> (without .yml)
+	@${PYTHON_BIN_DIR}/ansible-playbook \
+		$(ANSIBLE_EXTRA_ARGS) \
+		--check --diff \
 		playbooks/install/$*.yml
 
 ansible/uninstall/%:	## playbooks/uninstall/<name> (without .yml)

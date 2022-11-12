@@ -43,7 +43,7 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster, terraform config+apply and install all manifests
-cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/terraformconfig ansible/install/k3s system platform
+cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/k3s ansible/install/terraformconfig system platform
 
 .PHONY: system
 system:		## Install /system folder manifests
@@ -91,12 +91,12 @@ apply-tf:
 apply-manifest/%:	## apply manifest/<directory>
 	@echo apply: $@
 	@echo cd $*
-	@cd $* && $(BASE_DIR)/scripts/apply.sh
+	@export KUBECONFIG=$$(pwd)/kubeconfig.yaml && echo KUBECONFIG=$$KUBECONFIG && cd $* && $(BASE_DIR)/scripts/apply.sh
 
 delete-manifest/%:	## delete manifest/<directory>
 	@echo apply: $@
 	@echo $(BASE_DIR)
-	@cd $* && $(BASE_DIR)/scripts/delete.sh
+	@export KUBECONFIG=$$(pwd)/kubeconfig.yaml && echo KUBECONFIG=$$KUBECONFIG && cd $* && $(BASE_DIR)/scripts/delete.sh
 
 .PHONY: system/nginx
 system/nginx:

@@ -1,0 +1,6 @@
+- name: Remove cilium
+  hosts: all
+  tasks:
+  - name: Clean all cilium processes
+    shell: |
+      cilium uninstall

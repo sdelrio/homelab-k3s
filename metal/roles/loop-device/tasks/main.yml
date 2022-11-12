@@ -1,12 +1,16 @@
-- name: "Create loop device"
+- name: "Create loop device. 'losetup -a' and 'lsblk' will show it."
   ansible.builtin.command: "fallocate -l {{ loop_file_size }} {{ loop_file }}"
   args:
     creates: "{{ loop_file }}"
 
+- name: "Reduce ext4 root reserve to 1% loop device"
+  ansible.builtin.shell: |
+    tune2fs -m 1 $(df / | awk 'NR>1 {print $1}')
+
 - name: "Update rc.local"
   ansible.builtin.template:
     src: rc.local.j2
-    dest: /etc/rc.local1
+    dest: /etc/rc.local
     mode: '0755'
 
 - name: "Create rc-local service"
@@ -22,3 +26,6 @@
     name: rc-local.service
     enabled: yes
     state: started
+
+#- name: "execute losetup"
+#  ansible.builtin.command: "losetup {{ loop_device }} {{ loop_file }}"

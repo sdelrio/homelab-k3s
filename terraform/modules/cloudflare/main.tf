@@ -117,15 +117,6 @@ resource "kubernetes_service_account" "update-ip" {
     name = "update-ip"
     namespace = "external-dns"
   }
-  secret {
-    name = "${kubernetes_secret.update-ip.metadata.0.name}"
-  }
-}
-
-resource "kubernetes_secret" "update-ip" {
-  metadata {
-    name = "update-ip"
-  }
 }
 
 resource "kubernetes_cluster_role" "update-ip" {

@@ -1,5 +1,5 @@
 terraform {
-  required_version = "~> 1.2.0"
+  required_version = "~> 1.3.4"
 
   required_providers {
     cloudflare = {
@@ -9,7 +9,7 @@ terraform {
 
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.9.0"
+      version = "~> 2.15.0"
     }
 
     http = {

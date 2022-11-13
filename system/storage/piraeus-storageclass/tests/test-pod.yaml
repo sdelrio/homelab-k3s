@@ -1,0 +1,37 @@
+apiVersion: v1 
+kind: Pod
+metadata:
+  name: demo-pod-xfs-1
+  namespace: default
+spec:
+  containers:
+  - name: demo-pod-xfs-1
+    image: busybox
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do sleep 1000s; done"]
+    volumeMounts:
+      - mountPath: "/data"
+        name: demo-vol
+  volumes:
+    - name: demo-vol
+      persistentVolumeClaim:
+        claimName: pvc-claim-xfs-1
+---
+apiVersion: v1 
+kind: Pod
+metadata:
+  name: demo-pod-ext4-1
+  namespace: default
+spec:
+  containers:
+  - name: demo-pod-ext4-1
+    image: busybox
+    command: ["/bin/sh"]
+    args: ["-c", "while true; do sleep 1000s; done"]
+    volumeMounts:
+      - mountPath: "/data"
+        name: demo-vol
+  volumes:
+    - name: demo-vol
+      persistentVolumeClaim:
+        claimName: pvc-claim-ext4-1

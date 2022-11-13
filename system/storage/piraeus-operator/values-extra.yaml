@@ -6,12 +6,40 @@ stork:
 csi:
   enabled: true
   enableTopology: true  # We can use more intelligent placdement of our volumens and pods
+  resources:
+    reserve:
+      memory: 80Mi
+      cpu: 10m
+    limits:
+      memory: 100Mi
+      cpu: 100m
 operator:
   replicas: 1 # <- number of replicas for the operator deployment
+  resources:
+    requests:
+      memory: 30Mi
+      cpu: 25m
+    limits:
+      memory: 50Mi
+      cpu: 100m
   controller:
     dbConnectionURL: k8s # https://github.com/piraeusdatastore/piraeus-operator/blob/master/doc/k8s-backend.md
+    resources:
+      requests:
+        memory: 320Mi
+        cpu: 100m
+      limits:
+        memory: 448Mi
+        cpu: 1000m
   satelliteSet:
     enabled: true
+    resources:
+      requests:
+        memory: 150Mi
+        cpu: 10m
+      limits:
+        memory: 200Mi
+        cpu: 100m
     # Build and load DRBD using the Kernel Module Injection Image 
     kernelModuleInjectionImage: quay.io/piraeusdatastore/drbd9-jammy
     

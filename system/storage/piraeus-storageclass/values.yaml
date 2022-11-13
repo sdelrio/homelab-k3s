@@ -1,3 +1,6 @@
+basename: linstor
+pool: "lvm-thin"
+
 filesystems:
   - xfs
   - ext4

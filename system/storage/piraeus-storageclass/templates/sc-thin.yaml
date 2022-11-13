@@ -1,24 +1,42 @@
+# LINSTOR will provision volumes from the drbdpool storage pool configured
+# On the satellite nodes in the LINSTOR cluster specified in the plug-in's deployment
+# https://piraeus.io/site/docs/storage
+# https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-basic-configuration-and-deployment
+# https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-sc-parameters
+# https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-params-allow-remote-volume-access
 {{ $pool := .Values.pool }}
+{{ $provisioner := "linstor.csi.linbit.com" }}
 {{ range $fs := $.Values.filesystems }}
 {{ range $replica := $.Values.replicas }}
+{{ $scname := printf "%s-%s-ap%v" $.Values.basename $fs $replica }}
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-basic-configuration-and-deployment
-  name: "linstor-{{ $fs }}-r{{ $replica }}"
-provisioner: linstor.csi.linbit.com
+  name: "{{ $scname }}"
+provisioner: "{{ $provisioner }}"
 allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
 parameters:
-  # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-sc-parameters
   autoPlace: "{{ $replica }}"
-  # LINSTOR will provision volumes from the drbdpool storage pool configured
-  # On the satellite nodes in the LINSTOR cluster specified in the plug-in's deployment
   storagePool: "{{ $pool }}"
-  resourceGroup: "linstor-{{ $fs }}-r{{ $replica }}" 
+  resourceGroup: "{{ $scname }}"
   # Setting a fstype is required for "fsGroup" permissions to work correctly.
   # Currently supported: xfs/ext4
   csi.storage.k8s.io/fstype: {{ $fs }}
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: "{{ $scname }}-remote"
+provisioner: "{{ $provisioner }}"
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  autoPlace: "{{ $replica }}"
+  storagePool: "{{ $pool }}"
+  resourceGroup: "{{ $scname }}-remote"
+  csi.storage.k8s.io/fstype: {{ $fs }}
+  linstor.csi.linbit.com/allowRemoteVolumeAccess: "true"
 {{- end }}
 {{- end }}

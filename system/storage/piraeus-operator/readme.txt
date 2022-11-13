@@ -1,6 +1,7 @@
 # Charts for closed linbit operator
 
 https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#ch-kubernetes
+https://www.cncf.io/wp-content/uploads/2020/08/0513-Piraeus-CNCF-Webinar-1.pdf
 
 helm repo add linstor https://charts.linstor.io
 helm install linstor-op linstor/linstor

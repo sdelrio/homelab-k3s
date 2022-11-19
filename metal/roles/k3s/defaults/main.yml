@@ -1,12 +1,42 @@
 k3s_etcd: true
 #k3s_etcd: false
-k3s_version: v1.24.8+k3s1
+k3s_version: v1.25.3+k3s1
+#k3s_version: v1.24.7+k3s1
+#k3s_version: v1.23.14+k3s1
+#k3s_version: v1.22.16+k3s1
 k3s_config_file: /etc/rancher/k3s/config.yaml
 k3s_token_file: /etc/rancher/node/password
 k3s_service_file: /etc/systemd/system/k3s.service
 k3s_kubelet_args:
-- container-log-max-size=10Mi
-- container-log-max-files=2
+- 'container-log-max-size=10Mi'
+- 'container-log-max-files=2'
+- '--eviction-minimum-reclaim=imagefs.available=3%,nodefs.available=3%'
+- '--eviction-hard=memory.available<200Mi,imagefs.available<2%,nodefs.available<2%'
+- '--image-gc-high-threshold=98'
+- '--image-gc-low-threshold=96'
+- '--max-pods=120'
+
+# k3s default:
+# --eviction-hard=imagefs.available<5%,nodefs.available<5%
+# --eviction-minimum-reclaim=imagefs.available=10%,nodefs.available=10%
+
+# https://github.com/k3s-io/k3s/issues/5488 kubelet-args
+# https://kubernetes.io/docs/concepts/scheduling-eviction/node-pressure-eviction/
+
+#https://docs.k3s.io/security/self-assessment?_highlight=eviction&_highlight=minimum&_highlight=reclaim%3D#4210-ensure-that-the---tls-cert-file-and---tls-private-key-file-arguments-are-set-as-appropriate-manual
+# --eviction-hard=imagefs.available<5%,nodefs.available<5%
+# --eviction-minimum-reclaim=imagefs.available=10%,nodefs.available=10%
+
+# https://github.com/k3d-io/k3d/blob/main/docs/faq/faq.md#pods-evicted-due-to-lack-of-disk-space
+#  kubelet-arg:
+#  - 'eviction-minimum-reclaim=imagefs.available=1%,nodefs.available=1%@agent:*'
+#  - 'eviction-hard=imagefs.available<1%,nodefs.available<1%@agent:*'
+
+# https://devops.stackexchange.com/questions/16069/k3s-eviction-manager-attempting-to-reclaim-resourcename-ephemeral-storage
+#  kubelet-arg:
+#  - 'eviction-minimum-reclaim=imagefs.available=2%,nodefs.available=2%'
+#  - 'eviction-hard=memory.available<500Mi,nodefs.available<10Gi'
+
 k3s_server_config:
   disable:
     - local-storage
@@ -19,3 +49,7 @@ k3s_server_config:
   disable-kube-proxy: true  # we will replace it with cilium https://github.com/k3s-io/k3s/issues/2296
   tls-san:
     api.k3s.lorien.cloud
+  etcd-arg: '--heartbeat-interval=600'
+
+# About k3s high CPU:
+# https://github.com/k3s-io/k3s/issues/2278#issuecomment-771104128

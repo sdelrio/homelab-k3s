@@ -1,17 +1,17 @@
 ---
 # https://docs.cilium.io/en/v1.10/gettingstarted/k3s/
-- name: Download binary
+- name: "Download binary {{ cilium_url }}"
   ansible.builtin.get_url:
     url: "{{ cilium_url }}"
     checksum: "sha256:{{ cilium_sha256[cilium_arch] }}"
-    dest: "/opt/cilium.tar.gz"
+    dest: "{{ cilium_downloaded_file }}"
     owner: root
     group: root
     mode: 0755
 
 - name: Unarchive a file that is already on the remote machine
   ansible.builtin.unarchive:
-    src: "/opt/cilium.tar.gz"
+    src: "{{ cilium_downloaded_file }}"
     dest: "/usr/local/bin"
     creates: "/usr/local/bin/cilium"
     remote_src: true

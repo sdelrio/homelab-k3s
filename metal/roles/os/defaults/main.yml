@@ -3,10 +3,10 @@ os_sysctl:
   - { key: vm.swappiness, value: 1 }
   - { key: vm.min_free_kbytes, value: 131072 }
   #- { key: vm.dirty_background_ratio, value: 5 } # https://lonesysadmin.net/2013/12/22/better-linux-disk-caching-performance-vm-dirty_ratio/
-  # - { key: vm.dirty_ratio, value: 80 }
+  #- { key: vm.dirty_ratio, value: 80 }
   - { key: vm.dirty_background_ratio, value: 1 } # https://www.vertica.com/kb/Tuning-Linux-Dirty-Data-Parameters-for-Vertica/Content/BestPractices/Tuning-Linux-Dirty-Data-Parameters-for-Vertica.htm#ForMoreInformation
   - { key: vm.dirty_ratio, value: 3 }
-      #- { key: kernel.panic, value: 3 } # In case of a panic, the node will reboot after 3 seconds.
+  #- { key: kernel.panic, value: 3 } # In case of a panic, the node will reboot after 3 seconds.
   - { key: kernel.panic, value: 10 }   # In case of a panic, the node will reboot after 10 seconds.
   - { key: net.ipv4.tcp_rmem, value: "131072 1048576 16777216" } # https://docs.linbit.com/docs/users-guide-9.0/#s-measure-throughput
   - { key: net.ipv4.tcp_wmem, value: "131072 1048576 16777216" } # https://docs.linbit.com/docs/users-guide-9.0/#s-measure-throughput
@@ -15,7 +15,7 @@ os_sysctl:
     # default nuc 10GB ram ubuntu22 net.ipv4.tcp_wmem = 4096	16384	4194304 (min 4Kib, default 16kb, max 4Mib)
     # Default ubuntu 18 to "4096 16384 4194304" 4k 16k 4M"
     # esl/amoc to "4096 277750 134217728" 4k 270k 13M  # https://github.com/esl/amoc/blob/master/ansible/roles/prepare/tasks/main.yml0
-  #- { key: vm.nr_hugepages,value: 128 } # Enable hugpages
+  #- { key: vm.nr_hugepages,value: 128 } # Enable hugpages, can cause some problems if not used properly used with resources with some images
   - { key: vm.nr_hugepages, value: 0 } # Disable hugpages
   - { key: fs.inotify.max_user_watches, value: 204800}  # https://docs.syncthing.net/users/faq.html#inotify-limits
   # https://www.youtube.com/watch?v=eH4x5PGgDoM&list=PLGJrMkJUF3M1uLHaTpHdZgTzQUGl1CDdP&index=12

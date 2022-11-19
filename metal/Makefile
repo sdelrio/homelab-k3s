@@ -43,7 +43,7 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster, terraform config+apply and install all manifests
-cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/k3s ansible/install/terraformconfig apply-tf system platform
+cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/os ansible/install/k3s system platform ansible/install/terraformconfig apply-tf
 
 .PHONY: system
 system:		## Install /system folder manifests
@@ -55,7 +55,7 @@ system-storage: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/st
 
 .PHONY: platform
 platform:	## Install /platform folder manifests
-platform: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../platform/*/))))  
+platform: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../platform/*/))))
 
 .PHONY: tools
 tools:	## Install k9s and nerdctl tools in nodes
@@ -92,7 +92,7 @@ ansible/uninstall/%:	## playbooks/uninstall/<name> (without .yml)
 apply-tf:	## Run terraform: Create cloudflare api token ConfigMaps
 apply-tf:
 	@cd ../terraform && \
-		make
+		make && echo Success on terraform apply
 
 apply-manifest/%:	## apply manifest/<directory>
 	@echo apply: $@

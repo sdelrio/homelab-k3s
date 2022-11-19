@@ -16,6 +16,7 @@ ingress-nginx:
         proxy_cache_key $scheme$proxy_host$request_uri;
         proxy_cache_lock on;
         proxy_cache_use_stale updating;
+      custom-http-errors: "404,500,503"
     ingressClassResource:
       name: nginx-external
       enabled: true
@@ -105,3 +106,36 @@ ingress-nginx:
 
 #  tcp:
 #    29518: gitea/gitea-ssh:22
+
+# https://stackoverflow.com/questions/60233958/how-to-customize-error-pages-served-via-the-default-backend-of-an-nginx-ingress
+  defaultBackend:
+    enabled: true
+    resources:
+      requests:
+        cpu: 10m
+        memory: 16Mi
+      limits:
+        cpu: 50m
+        memory: 32Mi
+    image:
+      #registry: k8s.gcr.io
+      #image: ingress-nginx/nginx-errors # Source https://github.com/kubernetes/ingress-nginx/tree/main/images/custom-error-pages
+      #tag: "0.48.1" # Check latest version on https://github.com/kubernetes/ingress-nginx/blob/main/docs/examples/customization/custom-errors/custom-default-backend.yaml
+      registry: registry.k8s.io
+      image: ingress-nginx/nginx-errors
+      tag: "v20220916-gd32f8c343@sha256:09c421ac743bace19ab77979b82186941c5125c95e62cdb40bdf41293b5c275c"
+    extraVolumes:
+    - name: error-page
+      configMap:
+        name: error-page
+        items:
+        - key: "error-page"
+          path: "404.html"
+        - key: "error-page"
+          path: "500.html"
+        - key: "error-page"
+          path: "503.html"
+    extraVolumeMounts:
+    - name: error-page
+      mountPath: /www
+

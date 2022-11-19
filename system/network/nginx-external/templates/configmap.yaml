@@ -1,0 +1,79 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: error-page
+data:
+  error-page: |
+    <!DOCTYPE html>
+    <html lang="en" >
+    <head>
+      <meta charset="UTF-8">
+      
+    <link rel="apple-touch-icon" type="image/png" href="https://cpwebassets.codepen.io/assets/favicon/apple-touch-icon-5ae1a0698dcc2402e9712f7d01ed509a57814f994c660df9f7a952f3060705ee.png" />
+    <meta name="apple-mobile-web-app-title" content="CodePen">
+    <link rel="shortcut icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/favicon-aec34940fbc1a6e787974dcd360f2c6b63348d4b1f4e06c77743096d55480f33.ico" />
+    <link rel="mask-icon" type="image/x-icon" href="https://cpwebassets.codepen.io/assets/favicon/logo-pin-8f3771b1072e3c38bd662872f6b673a722f4b3ca2421637d5596661b4e2132cc.svg" color="#111" />
+      <title>CodePen - Simple 404 Page</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      
+      <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Lato:100,300'>
+      
+    <style>
+    *{
+        transition: all 0.6s;
+    }
+    html {
+        height: 100%;
+    }
+    body{
+        font-family: 'Lato', sans-serif;
+        color: #888;
+        margin: 0;
+    }
+    #main{
+        display: table;
+        width: 100%;
+        height: 100vh;
+        text-align: center;
+    }
+    .fof{
+        display: table-cell;
+        vertical-align: middle;
+    }
+    .fof h1{
+        font-size: 50px;
+        display: inline-block;
+        padding-right: 12px;
+        animation: type .5s alternate infinite;
+    }
+    @keyframes type{
+        from{box-shadow: inset -3px 0px 0px #888;}
+        to{box-shadow: inset -3px 0px 0px transparent;}
+    }
+    </style>
+      <script>
+      window.console = window.console || function(t) {};
+    </script>
+      
+      
+      <script>
+      if (document.location.search.match(/type=embed/gi)) {
+        window.parent.postMessage("resize", "*");
+      }
+    </script>
+    </head>
+    <body translate="no" >
+      <div id="main">
+          <div class="fof">
+                <h1>Error 404</h1>
+          </div>
+    </div>
+        <script src="https://cpwebassets.codepen.io/assets/common/stopExecutionOnTimeout-2c7831bb44f98c1391d6a4ffda0e1fd302503391ca806e7fcc7b9b87197aec26.js"></script>
+      
+          <script id="rendered-js" >
+    /* <3 You xD */
+    //# sourceURL=pen.js
+        </script>
+      
+    </body>
+    </html>

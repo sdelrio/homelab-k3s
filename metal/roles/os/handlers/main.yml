@@ -1,0 +1,10 @@
+---
+- name: restart ssh
+  service:
+    name: ssh
+    daemon_reload: true
+    state: restarted
+
+- name: reboot server
+  reboot:
+    reboot_timeout: 300

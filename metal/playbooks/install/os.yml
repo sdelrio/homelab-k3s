@@ -1,0 +1,7 @@
+---
+- name: Os base configs
+  hosts: nodes
+  vars:
+    ansible_path: "{{ playbook_dir }}/../.."
+  roles:
+    - os

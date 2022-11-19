@@ -1,0 +1,75 @@
+---
+- name: "Hosts | Build hosts file"
+  lineinfile:
+    dest: /etc/hosts
+    regexp: '.*{{ item }}$'
+    line: "{{ hostvars[item].node_ip | ipv4('address') }} {{item}}"
+    state: present
+  with_items: "{{ groups['all'] }}"
+  tags: [ hosts ]
+
+- name: "Logs | Rotate daily"
+  lineinfile:
+    path: /etc/logrotate.conf
+    regexp: '^(hourly|daily|weekly|monthly)'
+    line: 'daily'
+  tags: [ logs ]
+
+- name: "Logs | Keep 3 days"
+  lineinfile:
+    path: /etc/logrotate.conf
+    regexp: '^rotate'
+    line: 'rotate 3'
+  tags: [ logs ]
+
+- name: "Logs | Date in filename"
+  lineinfile:
+    path: /etc/logrotate.conf
+    regexp: '^dateext'
+    line: 'dateext'
+  tags: [ logs ]
+
+- name: "Logs | Journalctl"
+  lineinfile:
+    path: /etc/systemd/journald.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '^#?SystemMaxUse', line: 'SystemMaxUse=16M'}
+    - { regexp: '^#?ForwardToSyslog', line: 'ForwardToSyslog=no'}
+  tags: [ logs ]
+
+- name: "SSH | No DNS"
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?UseDNS'
+    line: 'UseDNS no'
+  notify: restart ssh
+  tags: [ ssh ]
+
+- name: "Kernel | sysctl"
+  sysctl:
+    name: "{{ item.key }}"
+    value: "{{ item.value }}"
+    state: present
+    reload: yes
+  loop: "{{ os_sysctl }}"
+
+- name: "Packages | disk utils"
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - smartmontools
+    - fio
+    - hdparm
+    - iotop
+
+- name: "Packages | nuc"
+  apt:
+    name: "{{ item }}"
+    state: present
+  when: "'nucs' in group_names"
+  loop:
+    - r8168-dkms
+  notify: reboot server

@@ -43,15 +43,18 @@ requirements-ansible: requirements
 
 .PHONY: cluster
 cluster:	## Create k3s cluster, terraform config+apply and install all manifests
-cluster: $(SSH_KEY_FILE) requirements-ansible ansible/install/os ansible/install/k3s system platform ansible/install/terraformconfig apply-tf
+cluster: $(SSH_KEY_FILE) requirements-ansible system-init-node system platform ansible/install/terraformconfig apply-tf
 
 .PHONY: system
 system:		## Install /system folder manifests
-system: system-network ansible/install/cilium-validate ansible/install/loop-device system-storage system-external system-internal
+system: system-network ansible/install/cilium-validate system-storage system-external system-internal
 system-network: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/network/*/))))
 system-external: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/external/*/))))
 system-internal: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/internal/*/))))
 system-storage: $(addprefix apply-manifest/,$(sort $(dir $(wildcard ../system/storage/*/))))
+
+system-init-node: 	## Add new node to cluster, config os, create loop device and install k3s
+system-init-node: ansible/install/os ansible/install/loop-device ansible/install/k3s
 
 .PHONY: platform
 platform:	## Install /platform folder manifests

@@ -2,6 +2,11 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
 #  global:
 #    image:
 #      tag: ## in case you cant to put a newer image than the chart
+  configs:
+    cm:
+      # -- Enable exec feature in Argo UI
+      exec.enabled: true  ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/rbac/#exec-resource
+
   server:
     logFormat: text  ## log format: text|json
     logLeve: info  ## log level

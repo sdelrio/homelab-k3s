@@ -2,6 +2,7 @@
   ansible.builtin.command: "fallocate -l {{ loop_file_size }} {{ loop_file }}"
   args:
     creates: "{{ loop_file }}"
+  when: loop_disk_device == ''
 
 - name: "Reduce ext4 root reserve to 1% loop device"
   ansible.builtin.shell: |

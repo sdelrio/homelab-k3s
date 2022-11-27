@@ -1,3 +1,4 @@
 loop_file: '/deviceloopfile.img'
 loop_file_size: '380G'
 loop_device: '/dev/loop0'
+loop_disk_device: ''

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+{% if loop_disk_device == '' -%}
 losetup {{ loop_device }} {{ loop_file }}
-
+{% else -%}
+losetup {{ loop_device }} {{ loop_disk_device }}
+{% endif %}
 exit 0

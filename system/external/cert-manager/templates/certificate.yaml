@@ -5,8 +5,8 @@ metadata:
 spec:
   secretName: acme-crt-secret
   issuerRef:
-#    name: letsencrypt-prod-dns
-    name: letsencrypt-stag-dns
+    name: letsencrypt-prod-dns
+#    name: letsencrypt-stag-dns
     kind: ClusterIssuer
   dnsNames:
   - 'lorien.cloud'

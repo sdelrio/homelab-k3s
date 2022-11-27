@@ -18,7 +18,7 @@ spec:
   roles:
   # A role which provides read-only access to all applications in the project
   - name: read-only
-    description: Read-only privileges to my-project
+    description: Read-only privileges to project-{{ .name }}
     policies:
     - p, proj:project-{{ .name }}:read-only, applications, get, project-{{ .name }}/*, allow
     groups:

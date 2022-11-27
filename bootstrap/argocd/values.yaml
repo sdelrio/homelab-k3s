@@ -1,0 +1,127 @@
+argo-cd:
+#  global:
+#    image:
+#      tag: ## in case you cant to put a newer image than the chart
+  server:
+    logFormat: text  ## log format: text|json
+    logLeve: info  ## log level
+
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 2
+      targetCPUUtilizationiPercentage: 60
+      targetMemoryUtilizationPercentage: 0
+
+    resources:
+      limits:
+        cpu: 500m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
+
+    metric:
+      enabled: true
+      serviceMonitor:
+        enabled: true
+        selector:
+          release: monitoring
+
+    # Certificate config
+    certificate:
+      enabled: false
+
+    extraArgs:
+      - --insecure
+    config:
+      statusbadge.enabled: 'true'
+      resource.customizations.health.argoproj.io_Application: |
+        hs = {}
+        hs.status = "Progressing"
+        hs.message = ""
+        if obj.status ~= nil then
+          if obj.status.health ~= nil then
+            hs.status = obj.status.health.status
+            if obj.status.health.message ~= nil then
+              hs.message = obj.status.health.message
+            end
+          end
+        end
+        return hs
+    ingress:
+      enabled: true
+      ingressClassName: nginx
+      annotations:
+#        cert-manager.io/cluster-issuer: letsencrypt-prod
+        hajimari.io/appName: ArgoCD
+        hajimari.io/icon: robot
+      hosts:
+        - &host argocd.k3s.lorien.cloud
+      tls:
+        - hosts:
+            - *host
+    config:
+      url: *host
+
+    metrics: &metrics
+      enabled: true
+      serviceMonitor:
+        enabled: true
+  dex:
+    enabled: false
+  controller:
+    metrics: *metrics
+    logFormat: text
+    logLevel: info
+    # If changing the number of replicas you must pass the number as ARGOCD_CONTROLLER_REPLICAS as an environment variable
+    # replicas > 1 only worth if managing several clusters
+    #replicas: 2
+    enableStatefulSet: true
+    resources:
+      limits:
+        cpu: 800m
+        memory: 1024Mi
+      requests:
+        cpu: 400m
+        memory: 512Mi
+    args:
+      operationProcessors: "50"
+      appResyncPeriod: "360"
+    extraArgs:
+      - "--repo-server-timeout-seconds"
+      - "210"
+
+  repoServer:
+    metrics: *metrics
+    logFormat: text
+    logLevel: info
+    autoscaling:
+      enabled: true
+      minReplicas: 1
+      maxReplicas: 3
+      targetCPUUtilizationiPercentage: 70
+      targetMemoryUtilizationPercentage: 0
+    resources:
+      limits:
+        cpu: 800m
+        memory: 128Mi
+      requests:
+        cpu: 400m
+        memory: 128Mi
+    #env:
+    #  - name: ARGOCD_EXEC_TIMEOUT
+    #    value: "300s"
+    #extraArgs:
+    #  - '--parallelismlimit'
+    #  - '1'
+  redis:
+    metrics: *metrics
+    resources:
+      limits:
+        cpu: 200m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 64Mi
+

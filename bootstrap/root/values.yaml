@@ -1,0 +1,11 @@
+gitops:
+  repo: https://github.com/sdelrio/homelab-k3s
+  revision: master
+stacks:
+  - name: bootstrap
+    namespace: argocd
+    sync: true
+#  - name: system
+#  - name: platform
+#  - name: apps
+

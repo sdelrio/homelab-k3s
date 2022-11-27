@@ -1,0 +1,26 @@
+{{- range $index, $stack := .Values.stacks }}
+---
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: "project-{{ .name }}"
+  namespace: {{ $.Release.Namespace }}
+spec:
+  destinations:
+  - namespace: '{{ default $stack.name $stack.namespace }}'
+    server: https://kubernetes.default.svc
+  sourceRepos:
+  - {{ $.Values.gitops.repo }}
+  {{- if $stack.whitelist }}
+  clusterResourceWhitelist:
+    {{- toYaml $stack.whitelist | nindent 4 }}
+  {{- end }}
+  roles:
+  # A role which provides read-only access to all applications in the project
+  - name: read-only
+    description: Read-only privileges to my-project
+    policies:
+    - p, proj:project-{{ .name }}:read-only, applications, get, project-{{ .name }}/*, allow
+    groups:
+    - project-{{ .name }}-oidc-group
+{{- end }}

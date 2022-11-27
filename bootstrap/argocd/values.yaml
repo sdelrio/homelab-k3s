@@ -1,4 +1,4 @@
-argo-cd:
+argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-password-of-argocd
 #  global:
 #    image:
 #      tag: ## in case you cant to put a newer image than the chart
@@ -62,7 +62,7 @@ argo-cd:
         - hosts:
             - *host
     config:
-      url: *host
+      url: https://*host
 
     metrics: &metrics
       enabled: true

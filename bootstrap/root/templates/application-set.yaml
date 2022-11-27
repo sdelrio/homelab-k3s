@@ -11,7 +11,7 @@ spec:
         repoURL: {{ $.Values.gitops.repo }}
         revision: {{ $.Values.gitops.revision }}
         directories:
-          - path: '{{ default `{{ $stack.name }}/*` $stack.path/* }}'
+          - path: '{{ default `{{ $stack.name }}` $stack.path }}/*'
   template:
     metadata:
       name: '{{ `{{path.basename}}` }}'

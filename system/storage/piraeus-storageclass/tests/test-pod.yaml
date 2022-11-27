@@ -1,11 +1,11 @@
-apiVersion: v1 
+apiVersion: v1
 kind: Pod
 metadata:
-  name: demo-pod-xfs-1
+  name: demo-pod-xfs
   namespace: default
 spec:
   containers:
-  - name: demo-pod-xfs-1
+  - name: demo-pod-xfs
     image: busybox
     command: ["/bin/sh"]
     args: ["-c", "while true; do sleep 1000s; done"]
@@ -15,16 +15,16 @@ spec:
   volumes:
     - name: demo-vol
       persistentVolumeClaim:
-        claimName: pvc-claim-xfs-1
+        claimName: pvc-claim-xfs
 ---
-apiVersion: v1 
+apiVersion: v1
 kind: Pod
 metadata:
-  name: demo-pod-ext4-1
+  name: demo-pod-ext4
   namespace: default
 spec:
   containers:
-  - name: demo-pod-ext4-1
+  - name: demo-pod-ext4
     image: busybox
     command: ["/bin/sh"]
     args: ["-c", "while true; do sleep 1000s; done"]
@@ -34,4 +34,4 @@ spec:
   volumes:
     - name: demo-vol
       persistentVolumeClaim:
-        claimName: pvc-claim-ext4-1
+        claimName: pvc-claim-ext4

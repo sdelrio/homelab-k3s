@@ -1,0 +1,2 @@
+crd/applications.argoproj.io
+crd/applicationsets.argoproj.io

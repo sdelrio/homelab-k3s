@@ -10,13 +10,16 @@ helm install linstor-op linstor/linstor
 
 # Charts in piraeus.io
 
+https://github.com/piraeusdatastore/helm-charts
+
 curl -s https://piraeus.io/helm-charts/index.yaml | yq eval '.entries | keys' - | head
 
 - linstor-affinity-controller
-- linstor-scheduler
+- [linstor-scheduler](https://artifacthub.io/packages/helm/piraeus-charts/linstor-scheduler)
 - piraeus-ha-controller
 - snapshot-controller
 - snapshot-validation-webhook
+- https://github.com/piraeusdatastore/linstor-scheduler-extender
 
 # backup before upgrade
 

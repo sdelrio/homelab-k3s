@@ -29,7 +29,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
     metric:
       enabled: true
       serviceMonitor:
-        enabled: true
+        enabled: false  # Disabled until a Prometheus is installed in cluster
         selector:
           release: monitoring
 
@@ -72,7 +72,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
     metrics: &metrics
       enabled: true
       serviceMonitor:
-        enabled: true
+        enabled: false  # Disabled until a Prometheus is installed in cluster
   dex:
     enabled: false
   controller:

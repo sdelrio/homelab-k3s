@@ -9,7 +9,7 @@ stacks:
         kind: ClusterRole
       - group: rbac.authorization.k8s.io
         kind: ClusterRoleBinding
-      - group: apiextensions.k8s.io/v1
+      - group: '*'
         kind: CustomResourceDefinition
 #    sync: true
 

@@ -5,7 +5,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
   configs:
     cm:
       # -- Enable exec feature in Argo UI
-      exec.enabled: true  ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/rbac/#exec-resource
+      exec.enabled: "true"  ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/rbac/#exec-resource
 
   server:
     logFormat: text  ## log format: text|json

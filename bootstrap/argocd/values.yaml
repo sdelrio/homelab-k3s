@@ -2,10 +2,6 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
 #  global:
 #    image:
 #      tag: ## in case you cant to put a newer image than the chart
-  configs:
-    cm:
-      # -- Enable exec feature in Argo UI
-      exec.enabled: "true"  ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/rbac/#exec-resource
 
   server:
     logFormat: text  ## log format: text|json
@@ -39,7 +35,21 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
 
     extraArgs:
       - --insecure
+    ingress:
+      enabled: true
+      ingressClassName: nginx-internal
+      annotations:
+#        cert-manager.io/cluster-issuer: letsencrypt-prod
+        hajimari.io/appName: ArgoCD
+        hajimari.io/icon: robot
+      hosts:
+        - &host argocd.k3s.lorien.cloud
+      tls:
+        - hosts:
+            - *host
     config:
+      url: https://*host
+      exec.enabled: 'true'  ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/rbac/#exec-resource
       statusbadge.enabled: 'true'
       kustomize.buildOptions: --enable-helm
       resource.customizations.health.argoproj.io_Application: |
@@ -55,20 +65,6 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
           end
         end
         return hs
-    ingress:
-      enabled: true
-      ingressClassName: nginx-internal
-      annotations:
-#        cert-manager.io/cluster-issuer: letsencrypt-prod
-        hajimari.io/appName: ArgoCD
-        hajimari.io/icon: robot
-      hosts:
-        - &host argocd.k3s.lorien.cloud
-      tls:
-        - hosts:
-            - *host
-    config:
-      url: https://*host
 
     metrics: &metrics
       enabled: true

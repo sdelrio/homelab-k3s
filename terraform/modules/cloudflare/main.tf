@@ -173,7 +173,7 @@ resource "kubernetes_cron_job_v1" "update-ip" {
                 name = "IP_HOSTNAME"
                 value = "svc.lorien.cloud"
               }
-              image = "bitnami/kubectl:1.24.3"
+              image = "bitnami/kubectl:1.25.4"
               command = ["/bin/sh",
                          "-c", <<-EOT
                          cat << EOF > /tmp/ingress.yml && kubectl apply -f /tmp/ingress.yml

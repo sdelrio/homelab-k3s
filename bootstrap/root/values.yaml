@@ -28,8 +28,23 @@ stacks:
         kind: ValidatingWebhookConfiguration
       - group: external-secrets.io
         kind: ClusterSecretStore
-
-#clusterrole.rbac.authorization.k8s.io/external-secrets-cert-controller reconciled. reconciliation required update.
-#clusterrole.rbac.authorization.k8s.io/external-secrets-cert-controller configured
-#  - name: system
+#    sync: true
+  - name: system
+    proj_namespaces:
+      - cert-manager
+      - external-dns
+      - intel-gpu-plugin
+      - kyverno
+      - nf-discovery
+      - reloader
+      - vault-operator
+      - cilium
+      - metallb-system
+      - nginx-external
+      - nginx-internal
+      - openebs-localpv
+      - piraeus-operator
+      - piraeus-storageclass
+      - volume-snapshot-crds
+#    sync: true
 #  - name: apps

@@ -17,5 +17,12 @@ stacks:
     proj_namespaces:
       - external-secrets
       - valut-server
+    whitelist:
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRole
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRoleBinding
+      - group: '*'
+        kind: CustomResourceDefinition
 #  - name: system
 #  - name: apps

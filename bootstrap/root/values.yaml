@@ -93,10 +93,14 @@ stacks:
         kind: CustomResourceDefinition
       - group: storage.k8s.io
         kind: StorageClass
+      - group: storage.k8s.io
+        kind: CSIStorageCapacity
       - group: piraeus.linbit.com
         kind: LinstorController
       - group: piraeus.linbit.com
         kind: LinstorCSIDriver
+      - group: piraeus.linbit.com
+        kind: LinstorSatelliteSet
     proj_namespaces:
       - openebs-localpv
       - piraeus-operator

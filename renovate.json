@@ -6,7 +6,7 @@
   "packageRules": [
     {
     "description": "Disable major and minor updates, since we want to do manual version for those upgrades",
-    "matchPackageNames": ["bitnami/kubectl", "ansible"],
+    "matchPackageNames": ["bitnami/kubectl", "ansible", "pbr"],
     "matchUpdateTypes": ["major", "minor"],
     "enabled": false
     }

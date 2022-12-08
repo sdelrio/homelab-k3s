@@ -29,19 +29,29 @@ stacks:
       - group: external-secrets.io
         kind: ClusterSecretStore
 #    sync: true
-  - name: system
+  - name: system-external
+    path: 'system/external'
     proj_namespaces:
       - cert-manager
       - external-dns
+  - name: system-internal
+    path: 'system/internal'
+    proj_namespaces:
       - intel-gpu-plugin
       - kyverno
       - nf-discovery
       - reloader
       - vault-operator
+  - name: system-network
+    path: 'system/network'
+    proj_namespaces:
       - cilium
       - metallb-system
       - nginx-external
       - nginx-internal
+  - name: system-storage
+    path: 'system/storage'
+    proj_namespaces:
       - openebs-localpv
       - piraeus-operator
       - piraeus-storageclass

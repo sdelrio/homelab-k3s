@@ -82,6 +82,8 @@ stacks:
         kind: L2Advertisement
       - group: admissionregistration.k8s.io
         kind: ValidatingWebhookConfiguration
+      - group: networking.k8s.io
+        kind: IngressClass
   - name: system-storage
     path: 'system/storage'
     helm_extra: true

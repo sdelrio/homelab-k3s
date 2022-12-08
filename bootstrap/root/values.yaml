@@ -3,7 +3,8 @@ gitops:
   revision: master
 stacks:
   - name: bootstrap
-    namespace: argocd
+    app_namespace: argocd
+    proj_namespaces: ["argocd"]
     whitelist:
       - group: rbac.authorization.k8s.io
         kind: ClusterRole
@@ -13,5 +14,8 @@ stacks:
         kind: CustomResourceDefinition
 #    sync: true
   - name: platform
+    proj_namespaces:
+      - external-secrets
+      - valut-server
 #  - name: system
 #  - name: apps

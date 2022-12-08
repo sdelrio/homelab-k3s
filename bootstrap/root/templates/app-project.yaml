@@ -7,8 +7,16 @@ metadata:
   namespace: {{ $.Release.Namespace }}
 spec:
   destinations:
-  - namespace: '{{ default $stack.name $stack.namespace }}'
+  {{- if not (hasKey $stack "proj_namespaces") }}
+  - namespace: '{{ $stack.name }}'
     server: https://kubernetes.default.svc
+  {{- end }}
+  {{- if hasKey $stack "proj_namespaces" }}
+  {{- range $i, $ns  := $stack.proj_namespaces }}
+  - namespace: '{{ $ns }}'
+    server: https://kubernetes.default.svc
+  {{- end }}
+  {{- end }}
   sourceRepos:
   - {{ $.Values.gitops.repo }}
   {{- if $stack.whitelist }}

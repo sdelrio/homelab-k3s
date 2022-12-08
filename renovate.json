@@ -5,8 +5,8 @@
   ],
   "packageRules": [
     {
-    "description": "Disable kubectl major and minor updates, since we want to match our cluster version",
-    "matchPackageNames": ["bitnami/kubectl"],
+    "description": "Disable major and minor updates, since we want to do manual version for those upgrades",
+    "matchPackageNames": ["bitnami/kubectl", "ansible"],
     "matchUpdateTypes": ["major", "minor"],
     "enabled": false
     }

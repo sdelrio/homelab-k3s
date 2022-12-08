@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+helmCharts:
+  - includeCRDs: true
+    name: argo-cd
+    namespace: argocd
+    releaseName: argocd
+    repo: https://argoproj.github.io/argo-helm
+    valuesFile: values.yaml
+    version: 5.13.8
+
+patchesJson6902:
+  - patch: |-
+      - op: add
+        path: "/rules/-"
+        value:
+          apiGroups:
+          - ""
+          resources:
+          - pods/exec
+          verbs:
+          - create
+    target:
+      group: rbac.authorization.k8s.io
+      kind: Role
+      name: argocd-server
+      version: v1
+

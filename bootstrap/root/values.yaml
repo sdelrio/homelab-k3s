@@ -84,6 +84,7 @@ stacks:
         kind: ValidatingWebhookConfiguration
   - name: system-storage
     path: 'system/storage'
+    helm_extra: true
     whitelist:
       - group: rbac.authorization.k8s.io
         kind: ClusterRole

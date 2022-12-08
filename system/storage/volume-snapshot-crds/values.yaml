@@ -1,0 +1,15 @@
+snapshot-controller: {}
+  resources:
+    limits:
+      cpu: 100m
+      memory: 64Mi
+    requests: 
+      cpu: 10m
+      memory: 64Mi
+  volumeSnapshotClasses:
+    - name: linstor-csi-delete
+      annotations:
+        snapshot.storage.kubernetes.io/is-default-class: "true"
+      driver: linstor.csi.linbit.com
+      deletionPolicy: Delete
+

@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: vault-issuer
+spec:
+  vault:
+    server: http://vault.vault-server
+    path: pki/sign/volume-snapshot-domain
+    auth:
+      kubernetes:
+        mountPath: /v1/auth/kubernetes
+        role: issuer
+        secretRef:
+          name: cert-manager-vault-token
+          key: token

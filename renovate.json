@@ -2,5 +2,13 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:base"
+  ],
+  "packageRules": [
+    {
+    "description": "Disable kubectl major and minor updates, since we want to match our cluster version",
+    "matchPackageNames": ["bitnami/kubectl"],
+    "matchUpdateTypes": ["major", "minor"],
+    "enabled": false
+    }
   ]
 }

@@ -60,6 +60,8 @@ stacks:
         kind: ClusterRole
       - group: rbac.authorization.k8s.io
         kind: ClusterRoleBinding
+      - group: '*'
+        kind: CustomResourceDefinition
   - name: system-network
     path: 'system/network'
     proj_namespaces:

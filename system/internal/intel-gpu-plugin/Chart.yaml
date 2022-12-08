@@ -4,4 +4,4 @@ version: 0.0.1
 dependencies:
   - name: intel-gpu-plugin
     version: 4.4.2
-    repository: https://k8s-at-home.com/charts/
+    repository: https://k8s-at-home.com/charts

@@ -69,6 +69,19 @@ stacks:
       - metallb-system
       - nginx-external
       - nginx-internal
+    whitelist:
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRole
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRoleBinding
+      - group: '*'
+        kind: CustomResourceDefinition
+      - group: metallb.io
+        kind: IPAddressPool
+      - group: metallb.io
+        kind: L2Advertisement
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
   - name: system-storage
     path: 'system/storage'
     whitelist:

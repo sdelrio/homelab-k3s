@@ -24,5 +24,7 @@ stacks:
         kind: ClusterRoleBinding
       - group: '*'
         kind: CustomResourceDefinition
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
 #  - name: system
 #  - name: apps

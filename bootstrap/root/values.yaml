@@ -104,6 +104,8 @@ stacks:
         kind: LinstorCSIDriver
       - group: piraeus.linbit.com
         kind: LinstorSatelliteSet
+      - group: snapshot.storage.k8s.io
+        kind: VolumeSnapshotClass
     proj_namespaces:
       - openebs-localpv
       - piraeus-operator

@@ -34,6 +34,19 @@ stacks:
     proj_namespaces:
       - cert-manager
       - external-dns
+    whitelist:
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRole
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRoleBinding
+      - group: '*'
+        kind: CustomResourceDefinition
+      - group: admissionregistration.k8s.io
+        kind: MutatingWebhookConfiguration
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
+      - group: cert-manager.io
+        kind: ClusterIssuer
   - name: system-internal
     path: 'system/internal'
     proj_namespaces:

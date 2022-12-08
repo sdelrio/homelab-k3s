@@ -24,6 +24,11 @@ spec:
         repoURL: {{ $.Values.gitops.repo }}
         path: '{{ `{{path}}` }}'
         targetRevision: {{ $.Values.gitops.revision }}
+        helm:
+          ignoreMissingValueFiles: true
+          valueFiles:
+            - values.yaml
+            - values-extra.yaml
       syncPolicy:
         {{- if $stack.sync }}
         automated:

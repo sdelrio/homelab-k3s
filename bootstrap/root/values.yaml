@@ -16,7 +16,7 @@ stacks:
   - name: platform
     proj_namespaces:
       - external-secrets
-      - valut-server
+      - vault-server
     whitelist:
       - group: rbac.authorization.k8s.io
         kind: ClusterRole
@@ -28,5 +28,8 @@ stacks:
         kind: ValidatingWebhookConfiguration
       - group: external-secrets.io
         kind: ClusterSecretStore
+
+#clusterrole.rbac.authorization.k8s.io/external-secrets-cert-controller reconciled. reconciliation required update.
+#clusterrole.rbac.authorization.k8s.io/external-secrets-cert-controller configured
 #  - name: system
 #  - name: apps

@@ -7,9 +7,9 @@ csi:
   enabled: true
   enableTopology: true  # We can use more intelligent placdement of our volumens and pods
   resources:
-    reserve:
-      memory: 80Mi
-      cpu: 10m
+#    reserve:
+#      memory: 80Mi
+#      cpu: 10m
     limits:
       memory: 100Mi
       cpu: 100m

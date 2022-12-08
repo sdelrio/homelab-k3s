@@ -6,7 +6,6 @@ helmChartInflationGenerator:
   chartVersion: 0.11.2
   releaseName: nf-discovery
   releaseNamespace: nf-discovery
-  # override with these custom values
   values: values.yaml
 
 patches:
@@ -14,9 +13,9 @@ patches:
     kind: Deployment
     name: nf-discovery-node-feature-discovery-master
   patch: |-
-   - op: replace
-     path: /spec/template/spec/containers/0/livenessProbe/initialDelaySeconds
-     value: 20
-   - op: replace
-     path: /spec/template/spec/containers/0/livenessProbe/failureThreshold
-     value: 15
+    - op: replace
+      path: /spec/template/spec/containers/0/livenessProbe/initialDelaySeconds
+      value: 20
+    - op: replace
+      path: /spec/template/spec/containers/0/livenessProbe/failureThreshold
+      value: 15

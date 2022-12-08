@@ -30,7 +30,7 @@ operator:
         cpu: 100m
       limits:
         memory: 448Mi
-        cpu: 1000m
+        cpu: '1'
   satelliteSet:
     enabled: true
     resources:

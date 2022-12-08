@@ -71,6 +71,19 @@ stacks:
       - nginx-internal
   - name: system-storage
     path: 'system/storage'
+    whitelist:
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRole
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRoleBinding
+      - group: '*'
+        kind: CustomResourceDefinition
+      - group: storage.k8s.io
+        kind: StorageClass
+      - group: piraeus.linbit.com
+        kind: LinstorController
+      - group: piraeus.linbit.com
+        kind: LinstorCSIDriver
     proj_namespaces:
       - openebs-localpv
       - piraeus-operator

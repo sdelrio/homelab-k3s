@@ -1,9 +1,9 @@
-snapshot-controller: {}
+snapshot-controller:
   resources:
     limits:
       cpu: 100m
       memory: 64Mi
-    requests: 
+    requests:
       cpu: 10m
       memory: 64Mi
   volumeSnapshotClasses:

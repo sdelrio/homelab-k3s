@@ -55,6 +55,11 @@ stacks:
       - nf-discovery
       - reloader
       - vault-operator
+    whitelist:
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRole
+      - group: rbac.authorization.k8s.io
+        kind: ClusterRoleBinding
   - name: system-network
     path: 'system/network'
     proj_namespaces:

@@ -23,7 +23,7 @@ stork:
   podsecuritycontext: {}
 csi:
   enabled: true
-  pluginImage: quay.io/piraeusdatastore/piraeus-csi:v0.20.0
+  pluginImage: quay.io/piraeusdatastore/piraeus-csi:v0.21.0
   csiAttacherImage: k8s.gcr.io/sig-storage/csi-attacher:v4.0.0
   csiLivenessProbeImage: k8s.gcr.io/sig-storage/livenessprobe:v2.7.0
   csiNodeDriverRegistrarImage: k8s.gcr.io/sig-storage/csi-node-driver-registrar:v2.5.1

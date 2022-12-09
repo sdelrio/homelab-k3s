@@ -46,4 +46,7 @@ spec:
         syncOptions:
           - CreateNamespace=true
           - ApplyOutOfSyncOnly=true
+          {{- if $stack.replace }}
+          - Replace=true
+          {{- end}}
 {{- end }}

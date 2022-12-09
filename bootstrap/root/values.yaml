@@ -67,14 +67,12 @@ stacks:
     ignoreDifferences:
       - group: '*'
         kind: CustomResourceDefinition
-        name: addresspools.metallb.io
-        namespace: metallb-system
+        name: 'addresspools.metallb.io'
         jsonPointers:
         - /spec/conversion/webhook/clientConfig/caBundle
       - group: '*'
         kind: CustomResourceDefinition
-        name: bgppeers.metallb.io
-        namespace: metallb-system
+        name: 'bgppeers.metallb.io'
         jsonPointers:
         - /spec/conversion/webhook/clientConfig/caBundle
     proj_namespaces:

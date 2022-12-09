@@ -64,6 +64,19 @@ stacks:
         kind: CustomResourceDefinition
   - name: system-network
     path: 'system/network'
+    ignoreDifferences:
+      - group: '*'
+        kind: CustomResourceDefinition
+        name: addresspools.metallb.io
+        namespace: metallb-system
+        jsonPointers:
+        - /spec/conversion/webhook/clientConfig/caBundle
+      - group: '*'
+        kind: CustomResourceDefinition
+        name: bgppeers.metallb.io
+        namespace: metallb-system
+        jsonPointers:
+        - /spec/conversion/webhook/clientConfig/caBundle
     proj_namespaces:
       - cilium
       - metallb-system

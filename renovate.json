@@ -5,10 +5,16 @@
   ],
   "packageRules": [
     {
-    "description": "Disable major and minor updates, since we want to do manual version for those upgrades",
-    "matchPackageNames": ["bitnami/kubectl", "ansible", "pbr"],
-    "matchUpdateTypes": ["major", "minor"],
-    "enabled": false
+      "description": "Disable major and minor updates, since we want to do manual version for those upgrades",
+      "matchPackageNames": ["bitnami/kubectl", "ansible", "pbr"],
+      "matchUpdateTypes": ["major", "minor"],
+      "enabled": false
+    },
+    {
+      "description": "Causes the bot to create a PR (and thus, an email notification), whenever there is a new major Renovate version",
+      "matchPaths": ["system/storage/piraeus-operator"],
+      "enabled": false,
+      "automerge": false
     }
   ]
 }

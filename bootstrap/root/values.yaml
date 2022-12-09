@@ -49,7 +49,6 @@ stacks:
         kind: ClusterIssuer
   - name: system-internal
     path: 'system/internal'
-    replace: true
     proj_namespaces:
       - intel-gpu-plugin
       - kyverno

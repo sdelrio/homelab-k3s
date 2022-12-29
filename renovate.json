@@ -13,6 +13,7 @@
     {
       "description": "Causes the bot to create a PR (and thus, an email notification), whenever there is a new major Renovate version",
       "matchPaths": ["system/storage/piraeus-operator"],
+      "groupName": "All piraeus-operator files",
       "enabled": false,
       "automerge": false
     }

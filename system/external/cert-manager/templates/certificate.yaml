@@ -9,7 +9,7 @@ spec:
 #    name: letsencrypt-stag-dns
     kind: ClusterIssuer
   dnsNames:
-  - "{{ $.Values.homelabDnsDomain }}"
-  - "*.{{ $.Values.homelabDnsDomain }}"
-  - "*.{{ $.Values.homelabExternalDomain }}.{{ $.Values.homelabDnsDomain }}"
-  - "*.{{ $.Values.homelabInternalDomain }}.{{ $.Values.homelabDnsDomain }}"
+  - 'lorien.cloud'
+  - '*.lorien.cloud'
+  - '*.svc.lorien.cloud'
+  - '*.k3s.lorien.cloud'

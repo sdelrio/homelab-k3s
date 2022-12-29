@@ -1,0 +1,3 @@
+homelabDnsDomain: 'lorien.cloud'
+homelabExternalDomain: 'svc'
+homelabInternalDomain: 'k3s'

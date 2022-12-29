@@ -1,9 +1,6 @@
 gitops:
   repo: https://github.com/sdelrio/homelab-k3s
   revision: master
-gitconfig:
-  repo: https://github.com/sdelrio/homelab-k3s
-  revision: master
 stacks:
   - name: bootstrap
     app_namespace: argocd
@@ -37,7 +34,6 @@ stacks:
     proj_namespaces:
       - cert-manager
       - external-dns
-    config_repo: system/external/cert-manager/values-extra.yaml
     whitelist:
       - group: rbac.authorization.k8s.io
         kind: ClusterRole

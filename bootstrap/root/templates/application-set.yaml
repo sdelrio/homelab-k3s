@@ -24,23 +24,6 @@ spec:
       ignoreDifferences:
         {{- toYaml $stack.ignoreDifferences | nindent 8 }}
       {{- end }}
-      {{- if hasKey $stack "config_repo" }}
-      sources:
-      - repoURL: {{ $.Values.gitops.repo }}
-        path: '{{ `{{path}}` }}'
-        targetRevision: {{ $.Values.gitops.revision }}
-        helm:
-          ignoreMissingValueFiles: true
-          valueFiles:
-            - values.yaml
-            {{- if $stack.helm_extra }}
-            - values-extra.yaml
-            {{- end }}
-            - $values/{{ $stack.config_repo }}
-      - repoURL: {{ $.Values.gitconfig.repo }}
-        targetRevision: {{ $.Values.gitconfig.revision }}
-        ref: values
-      {{- else }}
       source:
         repoURL: {{ $.Values.gitops.repo }}
         path: '{{ `{{path}}` }}'
@@ -52,7 +35,6 @@ spec:
             - values.yaml
             - values-extra.yaml
         {{- end }}
-      {{- end }}
       syncPolicy:
         {{- if $stack.sync }}
         automated:

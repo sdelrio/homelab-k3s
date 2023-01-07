@@ -17,9 +17,11 @@ hajimari:
             - *host
   hajimari:
     title: Apps
+    name: ''
+    lightTheme: cloud
     darkTheme: lime
     alwaysTargetBlank: true
-    showGreeting: false
+    showGreeting: true
     showAppGroups: true
     showAppStatus: true
     showBookmarkGroups: true
@@ -32,11 +34,13 @@ hajimari:
       - cilium
       - hajimari
       - vault-server
-    groups:
-      - name: Homelab
-        links:
-          - name: Public GitHub repository
-            url: https://github.com/sdelrio/homelab-k3s
+    globalBookmarks:
+      - group: Homelab
+        bookmarks:
+        - name: Public GitHub repository
+          url: https://github.com/sdelrio/homelab-k3s
+          icon: mdi:github
+
   podAnnotations:
     configmap.reloader.stakater.com/reload: "hajimari-settings"
   resources:

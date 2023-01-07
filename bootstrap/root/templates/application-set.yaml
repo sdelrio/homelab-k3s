@@ -10,15 +10,17 @@ spec:
     - git:
         repoURL: {{ $.Values.gitops.repo }}
         revision: {{ $.Values.gitops.revision }}
+        # https://github.com/argoproj/argo-cd/issues/11796
+        pathParamPrefix: apps  # Workaround for issue 11796
         directories:
           - path: '{{ default $stack.name $stack.path }}/*'
   template:
     metadata:
-      name: '{{ `{{path.basename}}` }}'
+      name: '{{ `{{apps.path.basename}}` }}'
     spec:
       destination:
         name: in-cluster
-        namespace: '{{ default `{{path.basename}}` $stack.app_namespace }}'
+        namespace: '{{ default `{{apps.path.basename}}` $stack.app_namespace }}'
       project: 'project-{{ $stack.name }}'
       {{- if $stack.ignoreDifferences }}
       ignoreDifferences:
@@ -27,7 +29,7 @@ spec:
       {{- if hasKey $stack "config_repo" }}
       sources:
       - repoURL: {{ $.Values.gitops.repo }}
-        path: '{{ `{{path}}` }}'
+        path: '{{ `{{apps.path}}` }}'
         targetRevision: {{ $.Values.gitops.revision }}
         helm:
           ignoreMissingValueFiles: true
@@ -43,7 +45,7 @@ spec:
       {{- else }}
       source:
         repoURL: {{ $.Values.gitops.repo }}
-        path: '{{ `{{path}}` }}'
+        path: '{{ `{{apps.path}}` }}'
         targetRevision: {{ $.Values.gitops.revision }}
         {{- if $stack.helm_extra }}
         helm:

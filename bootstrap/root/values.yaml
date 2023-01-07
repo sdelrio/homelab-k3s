@@ -135,4 +135,6 @@ stacks:
       - piraeus-storageclass
       - volume-snapshot-crds
 #    sync: true
-#  - name: apps
+  - name: apps
+    proj_namespaces:
+      - teamspeak-s3

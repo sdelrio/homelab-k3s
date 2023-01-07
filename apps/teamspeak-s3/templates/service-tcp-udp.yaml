@@ -1,0 +1,55 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "teamspeak-s3.fullname" . }}-tcp
+  labels:
+    {{- include "teamspeak-s3.labels" . | nindent 4 }}
+{{- if .Values.serviceTCP.annotations }}
+  annotations:
+{{ toYaml .Values.serviceTCP.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.serviceTCP.type }}
+  {{- if .Values.serviceTCP.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.serviceTCP.loadBalancerIP }}
+  {{- end }}
+  {{- if or (eq .Values.serviceTCP.type "NodePort") (eq .Values.serviceTCP.type "LoadBalancer") }}
+  externalTrafficPolicy: Local
+  {{- end }}
+  ports:
+    - port: 30033
+      name: tcp30033
+      targetPort: 30033
+      protocol: TCP
+    - port: 10011
+      targetPort: 10011
+      protocol: TCP
+      name: tcp10011
+  selector:
+    {{- include "teamspeak-s3.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "teamspeak-s3.fullname" . }}-udp
+  labels:
+    {{- include "teamspeak-s3.labels" . | nindent 4 }}
+{{- if .Values.serviceTCP.annotations }}
+  annotations:
+{{ toYaml .Values.serviceTCP.annotations | indent 4 }}
+{{- end }}
+spec:
+  type: {{ .Values.serviceTCP.type }}
+  {{- if .Values.serviceTCP.loadBalancerIP }}
+  loadBalancerIP: {{ .Values.serviceTCP.loadBalancerIP }}
+  {{- end }}
+  {{- if or (eq .Values.serviceTCP.type "NodePort") (eq .Values.serviceTCP.type "LoadBalancer") }}
+  externalTrafficPolicy: Local
+  {{- end }}
+  ports:
+    - port: 9987
+      name: udp9987
+      targetPort: 9987
+      protocol: UDP
+  selector:
+    {{- include "teamspeak-s3.selectorLabels" . | nindent 4 }}

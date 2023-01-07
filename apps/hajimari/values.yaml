@@ -1,0 +1,50 @@
+hajimari:
+  env:
+    TZ: Europe/Madrid
+  ingress:
+    main:
+      enabled: true
+      ingressClassName: nginx-internal
+      annotations:
+        hajimari.io/enable: 'false'
+      hosts:
+        - host: &host home.k3s.lorien.cloud
+          paths:
+            - path: /
+              pathType: Prefix
+      tls:
+        - hosts:
+            - *host
+  hajimari:
+    title: Apps
+    darkTheme: lime
+    alwaysTargetBlank: true
+    showGreeting: false
+    showAppGroups: true
+    showAppStatus: true
+    showBookmarkGroups: true
+    showGlobalBookmarks: true
+    showAppUrls: true
+    defaultEnable: true
+    namespaceSelector:
+      matchNames:
+      - argocd
+      - cilium
+      - hajimari
+      - vault-server
+    groups:
+      - name: Homelab
+        links:
+          - name: Public GitHub repository
+            url: https://github.com/sdelrio/homelab-k3s
+  podAnnotations:
+    configmap.reloader.stakater.com/reload: "hajimari-settings"
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128M
+  persistence:
+    data:
+      enabled: false
+      type: emptyDir
+

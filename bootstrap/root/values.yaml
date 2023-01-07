@@ -34,7 +34,7 @@ stacks:
 #    sync: true
   - name: system-external
     path: 'system/external'
-    helm_extra: true
+    #helm_extra: true
     proj_namespaces:
       - cert-manager
       - external-dns

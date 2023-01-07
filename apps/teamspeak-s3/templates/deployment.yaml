@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "teamspeak-s3.fullname" . }}
+  labels:
+    {{- include "teamspeak-s3.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "teamspeak-s3.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "teamspeak-s3.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "teamspeak-s3.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: s3-init-volume
+          image: sdelrio/s3-init-volume:51bd1b1-1.25.91-0.4
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: teamspeak-data
+              mountPath: "{{ .Values.volume.path }}"
+          env:
+            - name: VOLUME
+              value: "{{ .Values.volume.path }}"
+            {{- range .Values.externalSecrets.properties}}
+            - name: {{ . }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ $.Values.externalSecrets.target.name }}
+                  key: {{ . }}
+            {{- end }}
+            - name: RESTORE
+              value: "{{ .Values.volume.restore }}"
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - name: teamspeak-data
+              mountPath: "{{ .Values.volume.path }}"
+          env:
+            - name: TS3SERVER_LICENSE
+              value: accept
+          ports:
+          #     9987/udp for Voice
+          #    30033/tcp for Filetransfer
+          #    10011/tcp for ServerQuery
+          #    41144/tcp for TSDNS (optional)
+            - name: tstcp30033
+              containerPort: 30033
+              protocol: TCP
+            - name: tstcp10011
+              containerPort: 10011
+              protocol: TCP
+            - name: tstcp9987
+              containerPort: 9987
+              protocol: UDP
+          livenessProbe:
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            tcpSocket:
+              port: 30033
+            timeoutSeconds: 1
+          readinessProbe:
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            tcpSocket:
+              port: 30033
+            timeoutSeconds: 1
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: teamspeak-data
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

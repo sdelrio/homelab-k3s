@@ -1,0 +1,82 @@
+# Default values for teamspeak-s3.
+
+replicaCount: 1
+
+image:
+  repository: luzifer/teamspeak3
+  tag: 3.13.7
+  pullPolicy: IfNotPresent
+
+volume:
+  path: /teamspeak3
+  restore: false
+
+externalSecrets:
+  secretStore: vault-backend
+  target:
+    name: teamspeak-s3-secret
+  key: v1/teamspeak/s3-init-volume
+  properties:
+  - S3_BUCKET_NAME
+  - AWS_ACCESS_KEY_ID
+  - AWS_SECRET_ACCESS_KEY
+  - AWS_DEFAULT_REGION
+  - ENDPOINT_URL
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+
+# resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+  resources:
+    limits:
+      cpu: 800m
+      memory: 100Mi
+    requests:
+      cpu: 400m
+      memory: 100Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+serviceTCP:
+  type: LoadBalancer
+  annotations:
+    metallb.universe.tf/address-pool: my-ip-space
+    metallb.universe.tf/ip-address-pool: my-ip-space
+    metallb.universe.tf/allow-shared-ip: teamspeak-s3

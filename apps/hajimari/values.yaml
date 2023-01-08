@@ -34,6 +34,7 @@ hajimari:
       - cilium
       - hajimari
       - vault-server
+      - adguard
     globalBookmarks:
       - group: Homelab
         bookmarks:

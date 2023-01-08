@@ -1,0 +1,9 @@
+apiVersion: v2
+name: adguard
+description: Unofficial Chart for Adguard Home
+type: application
+version: 0.0.1
+dependencies:
+  - name: adguard-home
+    version: 0.9.0
+    repository: https://helm-charts.rm3l.org

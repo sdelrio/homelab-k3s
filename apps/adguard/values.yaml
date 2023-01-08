@@ -1,0 +1,41 @@
+adguard-home:
+  ingresses:
+    http:
+      enabled: true
+      className: nginx-internal
+      annotations:
+        hajimari.io/appName: AdGuard
+        hajimari.io/icon: "mdi:shield-check"
+      hosts:
+        - host: &host adguard.k3s.lorien.cloud
+          paths:
+            - path: /
+              pathType: ImplementationSpecific
+      tls:
+        - hosts:
+          - *host
+  services:
+    dns:
+      #type: LoadBalancer
+      port: 53
+#  autoscaling:
+#    enabled: true
+#    minReplicas: 1
+#    maxReplicas: 3
+#    targetCPUUtilizationPercentage: 80
+  persistence:
+    volumeClaimSpec:
+      storageClassName: linstor-ext4-ap2
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+
+  resources:
+    limits:
+      cpu: 200m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi

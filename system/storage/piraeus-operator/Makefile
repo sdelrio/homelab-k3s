@@ -1,5 +1,5 @@
 APP := piraeus-operator
-PO_VERSION := 1.10.0
+PO_VERSION := 1.10.1
 PO_URL := https://github.com/piraeusdatastore/piraeus-operator/archive/refs/tags/v$(PO_VERSION).tar.gz
 # Since there is no oficial chart repo, it's only available on github
 

@@ -39,7 +39,7 @@ operator:
         cpu: 10m
       limits:
         memory: 200Mi
-        cpu: 100m
+        cpu: 200m
     # Build and load DRBD using the Kernel Module Injection Image 
     kernelModuleInjectionImage: quay.io/piraeusdatastore/drbd9-jammy
     

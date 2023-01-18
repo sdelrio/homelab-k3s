@@ -77,7 +77,7 @@ root@piraeus-operator-cs-controller-7955bb4b4d-h2rfr:/# linstor node list
 ┊ piraeus-operator-cs-controller-7955bb4b4d-h2rfr ┊ CONTROLLER ┊ 10.42.0.15:3366 (PLAIN) ┊ Online ┊
 ╰─────────────────────────────────────────────────────────────────────────────────────────────────╯
 
-root@piraeus-operator-cs-controller-7955bb4b4d-h2rfr:/# linstor resource list                                 
+root@piraeus-operator-cs-controller-7955bb4b4d-h2rfr:/# linstor resource list
 ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 ┊ ResourceName                             ┊ Node  ┊ Port ┊ Usage  ┊ Conns ┊    State ┊ CreatedOn           ┊
 ╞═══════════════════════════════════════════════════════════════════════════════════════════════════════════╡
@@ -108,7 +108,7 @@ Description:
     Node: k3s-1, Resource: pvc-ca93fe68-aa7e-4049-9271-fc86c87fe3a8 deletion complete.
 Details:
     Node: k3s-1, Resource: pvc-ca93fe68-aa7e-4049-9271-fc86c87fe3a8 UUID was: e814917b-42a7-4fbf-b660-e577bc3e93ae
-root@piraeus-operator-cs-controller-7955bb4b4d-h2rfr:/# linstor resource list 
+root@piraeus-operator-cs-controller-7955bb4b4d-h2rfr:/# linstor resource list
 ╭───────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 ┊ ResourceName                             ┊ Node  ┊ Port ┊ Usage  ┊ Conns ┊    State ┊ CreatedOn           ┊
 ╞═══════════════════════════════════════════════════════════════════════════════════════════════════════════╡
@@ -138,7 +138,7 @@ Details:
 
 # Manual delete storage pool
 
-root@piraeus-operator-cs-controller-cdcf984-wgkh6:/# linstor storage-pool delete k3s-1 lvm-thin 
+root@piraeus-operator-cs-controller-cdcf984-wgkh6:/# linstor storage-pool delete k3s-1 lvm-thin
 SUCCESS:
 Description:
     Node: k3s-1, Storage pool name: lvm-thin deleted.
@@ -174,4 +174,37 @@ root@piraeus-operator-cs-controller-cdcf984-wgkh6:/# linstor physical-storage l
 ┊ Size ┊ Rotational ┊ Nodes ┊
 ╞═══════════════════════════╡
 ╰───────────────────────────╯
+
+# Auto-eviction
+
+https://linbit.com/blog/linstors-auto-evict/
+
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+┊ Node                                           ┊ NodeType   ┊ Addresses               ┊ State                                        ┊
+╞══════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════╡
+┊ asus-0                                         ┊ SATELLITE  ┊ 10.6.3.203:3366 (PLAIN) ┊ Online                                       ┊
+┊ nuc-2                                          ┊ SATELLITE  ┊ 10.6.3.202:3366 (PLAIN) ┊ OFFLINE (Auto-eviction: 2023-01-17 21:44:36) ┊
+┊ piraeus-operator-cs-controller-9758f794f-d8pjg ┊ CONTROLLER ┊ 10.42.0.95:3366 (PLAIN) ┊ Online                                       ┊
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+To cancel automatic eviction please consider the corresponding DrbdOptions/AutoEvict* properties on controller and / or node level
+See 'linstor controller set-property --help' or 'linstor node set-property --help' for more details
+root@piraeus-operator-cs-controller-9758f794f-d8pjg:/# linstor node restore nuc-2
+ERROR:
+    Node 'nuc-2' is neither evicted nor evacuated.
+root@piraeus-operator-cs-controller-9758f794f-d8pjg:/# linstor node lost nuc-2
+SUCCESS:
+Description:
+    Node 'nuc-2' deleted.
+Details:
+    Node 'nuc-2' UUID was: eba59576-9b80-4772-b827-00a015b2f7ab
+SUCCESS:
+    Notified 'asus-0' that 'nuc-2' has been lost
+
+╭─────────────────────────────────────────────────────────────────────────────────────────────────╮
+┊ Node                                           ┊ NodeType   ┊ Addresses               ┊ State   ┊
+╞═════════════════════════════════════════════════════════════════════════════════════════════════╡
+┊ asus-0                                         ┊ SATELLITE  ┊ 10.6.3.203:3366 (PLAIN) ┊ Online  ┊
+┊ nuc-2                                          ┊ SATELLITE  ┊ 10.6.3.202:3366 (PLAIN) ┊ OFFLINE ┊
+┊ piraeus-operator-cs-controller-9758f794f-d8pjg ┊ CONTROLLER ┊ 10.42.0.95:3366 (PLAIN) ┊ Online  ┊
+╰─────────────────────────────────────────────────────────────────────────────────────────────────╯
 

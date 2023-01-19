@@ -139,6 +139,7 @@ stacks:
     proj_namespaces:
       - teamspeak-s3
       - hajimari
+      - adguard
     whitelist:
       - group: rbac.authorization.k8s.io
         kind: ClusterRole

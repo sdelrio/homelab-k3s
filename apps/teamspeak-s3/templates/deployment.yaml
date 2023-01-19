@@ -29,8 +29,6 @@ spec:
             - name: teamspeak-data
               mountPath: "{{ .Values.volume.path }}"
           env:
-            - name: VOLUME
-              value: "{{ .Values.volume.path }}"
             {{- range .Values.externalSecrets.properties}}
             - name: {{ . }}
               valueFrom:
@@ -40,6 +38,13 @@ spec:
             {{- end }}
             - name: RESTORE
               value: "{{ .Values.volume.restore }}"
+            - name: VOLUME
+              value: "{{ .Values.volume.path }}"
+          envFrom:
+            - configMapRef:
+                name: {{ include "teamspeak-s3.fullname" .}}-config
+            - secretRef:
+                name: {{ include "teamspeak-s3.fullname" .}}-secret
       containers:
         - name: {{ .Chart.Name }}
           securityContext:

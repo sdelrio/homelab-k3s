@@ -37,7 +37,7 @@ elif [ -f Chart.yaml ]; then
     fi
 
     if [ "${DEBUG}" == "true" ]; then
-         helm template \
+        helm template \
         --include-crds \
         ${HELM_EXTRA} \
         --namespace ${NS} ${DEPLOY} .

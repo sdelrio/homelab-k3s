@@ -43,7 +43,7 @@ operator:
         cpu: 100m
       limits:
         memory: 500Mi
-        cpu: "1.0"
+        cpu: "1"
     # Build and load DRBD using the Kernel Module Injection Image 
     kernelModuleInjectionImage: quay.io/piraeusdatastore/drbd9-jammy
     
@@ -53,10 +53,10 @@ operator:
 
     kernelModuleInjectionResources:
       limits:
-        cpu: "1.0"
+        cpu: "1"
         memory: "1Gi"
       requests:
-        cpu: "0.5"
+        cpu: "500m"
         memory: "750Mi"
    
     # https://piraeus.io/site/docs/storage 

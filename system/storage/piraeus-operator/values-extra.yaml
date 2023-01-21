@@ -1,3 +1,13 @@
+# https://github.com/piraeusdatastore/piraeus-operator/blob/master/examples/resource-requirements.yaml
+.minimal-resouces: &minimal-resources
+  # Resources for a minimal stateless go container.
+  limits:
+    cpu: "0.2"
+    memory: "250Mi"
+  requests:
+    cpu: "0.1"
+    memory: "100Mi"
+
 # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-overview
 etcd:
   enabled: false # https://github.com/piraeusdatastore/piraeus-operator/blob/master/doc/k8s-backend.md
@@ -5,14 +15,8 @@ stork:
   enabled: false
 csi:
   enabled: true
-  enableTopology: true  # We can use more intelligent placdement of our volumens and pods
-  resources:
-#    reserve:
-#      memory: 80Mi
-#      cpu: 10m
-    limits:
-      memory: 100Mi
-      cpu: 100m
+  enableTopology: true  # We can use more intelligent placement of our volumens and pods
+  resources: *minimal-resources
 operator:
   replicas: 1 # <- number of replicas for the operator deployment
   resources:
@@ -36,16 +40,24 @@ operator:
     resources:
       requests:
         memory: 150Mi
-        cpu: 10m
+        cpu: 100m
       limits:
-        memory: 200Mi
-        cpu: 200m
+        memory: 500Mi
+        cpu: "1.0"
     # Build and load DRBD using the Kernel Module Injection Image 
     kernelModuleInjectionImage: quay.io/piraeusdatastore/drbd9-jammy
     
     # Selects the source for the DRBD kernel module: None|Compile|ShippedModules|DepsOnly
     #  on ubuntu, you can install drbd by PPA https://launchpad.net/~linbit/+archive/ubuntu/linbit-drbd9-stack
     kernelModuleInjectionMode: Compile
+
+    kernelModuleInjectionResources:
+      limits:
+        cpu: "1.0"
+        memory: "1Gi"
+      requests:
+        cpu: "0.5"
+        memory: "750Mi"
    
     # https://piraeus.io/site/docs/storage 
     storagePools:
@@ -69,5 +81,6 @@ operator:
         operator: Exists
         effect: NoSchedule
 haController:
-  enabled: false  # Optionan component, failover of pods quicker if enabled when having 3+ nodes
+  enabled: false  # Optional component, failover of pods quicker if enabled when having 3+ nodes
+  resources: *minimal-resources
 

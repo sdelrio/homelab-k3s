@@ -5,8 +5,8 @@ node-feature-discovery:
         cpu: 25m
         memory: 18Mi
       limits:
-        cpu: 50m
-        memory: 128Mi
+        cpu: 25m
+        memory: 18Mi
     config:
       core:
         #labelWhiteList: null   ## Default to null but gives an error if we define it like null
@@ -137,5 +137,5 @@ node-feature-discovery:
         cpu: 25m
         memory: 22Mi
       limits:
-        cpu: 25m
-        memory: 22Mi
+        cpu: 50m
+        memory: 128Mi

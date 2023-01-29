@@ -1,7 +1,7 @@
 argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-password-of-argocd
   global:
     image:
-      tag: v2.6.0-rc4  ## in case you cant to put a newer image than the chart
+      tag: v2.6.0-rc6  ## in case you cant to put a newer image than the chart
 
     deploymentAnnotations:
       reloader.stakater.com/auto: "true"

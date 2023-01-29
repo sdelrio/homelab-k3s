@@ -35,6 +35,9 @@ operator:
       limits:
         memory: 448Mi
         cpu: '1'
+    additionalProperties:  # https://github.com/LINBIT/linstor-server/blob/master/docs/rest_v1_openapi.yaml
+      DrbdOptions/AutoEvictMaxDisconnectedNodes: "0"
+      DrbdOptions/AutoEvictAllowEviction: "False"
   satelliteSet:
     enabled: true
     resources:
@@ -44,22 +47,22 @@ operator:
       limits:
         memory: 500Mi
         cpu: "1"
-    # Build and load DRBD using the Kernel Module Injection Image 
+    # Build and load DRBD using the Kernel Module Injection Image
     kernelModuleInjectionImage: quay.io/piraeusdatastore/drbd9-jammy
-    
+
     # Selects the source for the DRBD kernel module: None|Compile|ShippedModules|DepsOnly
     #  on ubuntu, you can install drbd by PPA https://launchpad.net/~linbit/+archive/ubuntu/linbit-drbd9-stack
     kernelModuleInjectionMode: Compile
 
     kernelModuleInjectionResources:
       limits:
-        cpu: "1"
+        cpu: "2"
         memory: "1Gi"
       requests:
         cpu: "500m"
         memory: "750Mi"
-   
-    # https://piraeus.io/site/docs/storage 
+
+    # https://piraeus.io/site/docs/storage
     storagePools:
       #lvmPools:
       #- name: lvm-thick

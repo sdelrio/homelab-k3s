@@ -6,7 +6,13 @@ filesystems:
   - ext4
 
 replicas:
-  - 1
-  - 2
-  - 3
+  - number: 1
+  - number: 2
+  - number: 3
 
+#properties:
+# to use piraeus-ha-controller
+#  property.linstor.csi.linbit.com/DrbdOptions/auto-quorum: suspend-io
+#  property.linstor.csi.linbit.com/DrbdOptions/Resource/on-no-data-accessible: suspend-io
+#  property.linstor.csi.linbit.com/DrbdOptions/Resource/on-suspended-primary-outdated: force-secondary
+#  property.linstor.csi.linbit.com/DrbdOptions/Net/rr-conflict: retry-connect

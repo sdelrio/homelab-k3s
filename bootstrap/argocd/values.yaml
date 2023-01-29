@@ -1,7 +1,41 @@
 argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-password-of-argocd
   global:
     image:
-      tag: v2.6.0-rc2  ## in case you cant to put a newer image than the chart
+      tag: v2.6.0-rc6  ## in case you cant to put a newer image than the chart
+
+    deploymentAnnotations:
+      reloader.stakater.com/auto: "true"
+    statefulsetAnnotations:
+      reloader.stakater.com/auto: "true"
+
+  configs:
+  ## Ref: https://github.com/argoproj/argo-cd/blob/master/docs/operator-manual/argocd-cm.yaml
+    cm:
+      # The exec resource allows a user to exec into Pods via the Argo CD UI
+      exec.enabled: 'true'  ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/rbac/#exec-resource
+      statusbadge.enabled: 'true'
+      url: https://*host
+      kustomize.buildOptions: --enable-helm
+      resource.customizations.health.argoproj.io_Application: |
+        hs = {}
+        hs.status = "Progressing"
+        hs.message = ""
+        if obj.status ~= nil then
+          if obj.status.health ~= nil then
+            hs.status = obj.status.health.status
+            if obj.status.health.message ~= nil then
+              hs.message = obj.status.health.message
+            end
+          end
+        end
+        return hs
+      timeout.reconciliation: 0s
+      ## https://github.com/jkroepke/helm-secrets/wiki/ArgoCD-Integration#step-2-allow-helm-secrets-schemes-in-argocd-cm-configmap
+      helm.valuesFileSchemes: >-
+        secrets+gpg-import, secrets+gpg-import-kubernetes,
+        secrets+age-import, secrets+age-import-kubernetes,
+        secrets,secrets+literal,
+        https
 
   server:
     logFormat: text  ## log format: text|json
@@ -47,24 +81,6 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
       tls:
         - hosts:
             - *host
-    config:
-      url: https://*host
-      exec.enabled: 'true'  ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/rbac/#exec-resource
-      statusbadge.enabled: 'true'
-      kustomize.buildOptions: --enable-helm
-      resource.customizations.health.argoproj.io_Application: |
-        hs = {}
-        hs.status = "Progressing"
-        hs.message = ""
-        if obj.status ~= nil then
-          if obj.status.health ~= nil then
-            hs.status = obj.status.health.status
-            if obj.status.health.message ~= nil then
-              hs.message = obj.status.health.message
-            end
-          end
-        end
-        return hs
 
     metrics: &metrics
       enabled: true
@@ -98,6 +114,75 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
     metrics: *metrics
     logFormat: text
     logLevel: info
+    rbac:
+    - apiGroups:
+      - ""
+      resources:
+      - secrets
+      verbs:
+      - get
+    # helm-secrets ArgoCD Integration:
+    # https://github.com/jkroepke/helm-secrets/wiki/ArgoCD-Integration#option-2-init-containe
+    env:
+      - name: HELM_PLUGINS
+        value: /custom-tools/helm-plugins/
+      - name: HELM_SECRETS_SOPS_PATH
+        value: /custom-tools/sops
+      - name: HELM_SECRETS_KUBECTL_PATH
+        value: /custom-tools/kubectl
+      - name: HELM_SECRETS_CURL_PATH
+        value: /custom-tools/curl
+      # https://github.com/jkroepke/helm-secrets/wiki/Security-in-shared-environments
+      - name: HELM_SECRETS_VALUES_ALLOW_SYMLINKS
+        value: "false"
+      - name: HELM_SECRETS_VALUES_ALLOW_ABSOLUTE_PATH
+        value: "false"
+      - name: HELM_SECRETS_VALUES_ALLOW_PATH_TRAVERSAL
+        value: "false"
+      - name: HELM_SECRETS_IGNORE_MISSING_VALUES
+        value: "true"
+    volumes:
+      - name: custom-tools
+        emptyDir: {}
+      # https://github.com/jkroepke/helm-secrets/wiki/ArgoCD-Integration#making-the-key-accessible-within-argocd
+      - name: helm-secrets-private-keys
+        secret:
+          secretName: helm-secrets-private-keys
+
+    volumeMounts:
+      - mountPath: /custom-tools
+        name: custom-tools
+      # https://github.com/jkroepke/helm-secrets/wiki/ArgoCD-Integration#making-the-key-accessible-within-argocd
+      - mountPath: /helm-secrets-private-keys/
+        name: helm-secrets-private-keys
+
+    initContainers:
+      - name: download-tools
+        image: ubuntu:22.04
+        command:
+          - /bin/bash
+          - -c
+          - |
+            DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y wget
+            mkdir -p /custom-tools/helm-plugins
+            wget -qO- https://github.com/jkroepke/helm-secrets/releases/download/${HELM_SECRETS_VERSION}/helm-secrets.tar.gz | tar -C /custom-tools/helm-plugins -xzf-
+            wget -qO /custom-tools/sops https://github.com/mozilla/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux
+            wget -qO /custom-tools/kubectl https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/amd64/kubectl
+            chmod +x /custom-tools/*
+        env:
+          - name: HELM_SECRETS_VERSION
+            # renovate: datasource=github-releases depName=jkroepke/helm-secrets
+            value: "v4.2.2"
+          - name: KUBECTL_VERSION
+            # renovate: datasource=github-releases depName=kubernetes/kubernetes
+            value: "v1.26.0"
+          - name: SOPS_VERSION
+            # renovate: datasource=github-releases depName=mozilla/sops
+            value: "v3.7.3"
+        volumeMounts:
+          - mountPath: /custom-tools
+            name: custom-tools
+
     autoscaling:
       enabled: true
       minReplicas: 1

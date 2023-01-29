@@ -1,4 +1,6 @@
 arrayCRD=(
+linstorsatelliteset
+linstorcontroller
 propscontainers.internal.linstor.linbit.com
 secaccesstypes.internal.linstor.linbit.com
 secaclmap.internal.linstor.linbit.com
@@ -24,14 +26,13 @@ secobjectprotection.internal.linstor.linbit.com
 secroles.internal.linstor.linbit.com
 sectyperules.internal.linstor.linbit.com
 sectypes.internal.linstor.linbit.com
+secaclmap.internal.linstor.linbit.com
 spacehistory.internal.linstor.linbit.com
 storpooldefinitions.internal.linstor.linbit.com
 trackingdate.internal.linstor.linbit.com
 volumedefinitions.internal.linstor.linbit.com
 volumegroups.internal.linstor.linbit.com
 volumes.internal.linstor.linbit.com
-linstorsatelliteset
-linstorcontroller
 ebsremotes.internal.linstor.linbit.com
 files.internal.linstor.linbit.com
 keyvaluestore.internal.linstor.linbit.com

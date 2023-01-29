@@ -29,13 +29,6 @@ spec:
             - name: teamspeak-data
               mountPath: "{{ .Values.volume.path }}"
           env:
-            {{- range .Values.externalSecrets.properties}}
-            - name: {{ . }}
-              valueFrom:
-                secretKeyRef:
-                  name: {{ $.Values.externalSecrets.target.name }}
-                  key: {{ . }}
-            {{- end }}
             - name: RESTORE
               value: "{{ .Values.volume.restore }}"
             - name: VOLUME

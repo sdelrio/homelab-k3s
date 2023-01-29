@@ -177,6 +177,13 @@ root@piraeus-operator-cs-controller-cdcf984-wgkh6:/# linstor physical-storage l
 
 # Auto-eviction
 
+https://github.com/piraeusdatastore/linstor-csi/issues/172
+
+According to https://linbit.com/drbd-user-guide/drbd-guide-9_0-en/#s-automatic-promotion automatic promotion is now baked into drbd,
+however https://linbit.com/drbd-user-guide/drbd-guide-9_0-en/#s-feature-failover-clusters says this should be done with
+"a cluster resource manager (CRM) such as DRBD Reactor and its promoter plug-in"
+and further https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-linstor_ha says that for HA auto-promote should be disabled.
+
 https://linbit.com/blog/linstors-auto-evict/
 
 ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮

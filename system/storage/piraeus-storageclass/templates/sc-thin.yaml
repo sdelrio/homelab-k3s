@@ -8,7 +8,7 @@
 {{ $provisioner := "linstor.csi.linbit.com" }}
 {{ range $fs := $.Values.filesystems }}
 {{ range $replica := $.Values.replicas }}
-{{ $scname := printf "%s-%s-ap%v" $.Values.basename $fs $replica }}
+{{ $scname := printf "%s-%s-ap%v" $.Values.basename $fs $replica.number }}
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -18,7 +18,7 @@ provisioner: "{{ $provisioner }}"
 allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
 parameters:
-  autoPlace: "{{ $replica }}"
+  autoPlace: "{{ $replica.number }}"
   storagePool: "{{ $pool }}"
   resourceGroup: "{{ $scname }}"
   # Setting a fstype is required for "fsGroup" permissions to work correctly.
@@ -33,10 +33,19 @@ provisioner: "{{ $provisioner }}"
 allowVolumeExpansion: true
 volumeBindingMode: WaitForFirstConsumer
 parameters:
-  autoPlace: "{{ $replica }}"
+  autoPlace: "{{ $replica.number }}"
   storagePool: "{{ $pool }}"
   resourceGroup: "{{ $scname }}-remote"
   csi.storage.k8s.io/fstype: {{ $fs }}
   linstor.csi.linbit.com/allowRemoteVolumeAccess: "true"
+  # property.linstor.csi.linbit.com/*
+  # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-storage-class-properties
+  # property.linstor.csi.linbit.com/
+  {{- with $.Values.property }}
+  {{ $.Values.property | toYaml | nindent 2}}
+  {{- end }}
+  {{- with $replica.property }}
+  {{ $replica.property | toYaml | nindent 2}}
+  {{- end }}
 {{- end }}
 {{- end }}

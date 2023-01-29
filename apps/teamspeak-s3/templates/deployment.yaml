@@ -41,8 +41,6 @@ spec:
             - name: VOLUME
               value: "{{ .Values.volume.path }}"
           envFrom:
-            - configMapRef:
-                name: {{ include "teamspeak-s3.fullname" .}}-config
             - secretRef:
                 name: {{ include "teamspeak-s3.fullname" .}}-secret
       containers:

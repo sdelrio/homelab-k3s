@@ -23,7 +23,24 @@ parameters:
   resourceGroup: "{{ $scname }}"
   # Setting a fstype is required for "fsGroup" permissions to work correctly.
   # Currently supported: xfs/ext4
+  # CSI related parameter
   csi.storage.k8s.io/fstype: {{ $fs }}
+  # LINSTOR parameters
+  # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-sc-parameters
+  # linstor.csi.linbit.com/*
+  # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-storage-class-properties
+  # Linstor properties
+  # property.linstor.csi.linbit.com/*: <x>
+  # DRBD parameters
+  # DrbdOptions/*: <x>
+  # Custom general values
+  {{- with $.Values.property }}
+  {{ $.Values.property | toYaml | nindent 2}}
+  {{- end }}
+  # Custom per replica values
+  {{- with $replica.property }}
+  {{ $replica.property | toYaml | nindent 2}}
+  {{- end }}
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
@@ -36,14 +53,23 @@ parameters:
   autoPlace: "{{ $replica.number }}"
   storagePool: "{{ $pool }}"
   resourceGroup: "{{ $scname }}-remote"
+  # CSI related parameters
   csi.storage.k8s.io/fstype: {{ $fs }}
+  # LINSTOR parameters
+  # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-sc-parameters
+  # linstor.csi.linbit.com/*
   linstor.csi.linbit.com/allowRemoteVolumeAccess: "true"
-  # property.linstor.csi.linbit.com/*
   # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-storage-class-properties
-  # property.linstor.csi.linbit.com/
+  # Linstor properties
+  # property.linstor.csi.linbit.com/*: <x>
+  # DRBD parameters
+  # DrbdOptions/*: <x>
+  # Custom general values
+  # Custom general values
   {{- with $.Values.property }}
   {{ $.Values.property | toYaml | nindent 2}}
   {{- end }}
+  # Custom per replica values
   {{- with $replica.property }}
   {{ $replica.property | toYaml | nindent 2}}
   {{- end }}

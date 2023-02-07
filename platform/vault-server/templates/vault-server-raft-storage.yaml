@@ -260,7 +260,7 @@ spec:
   #              - setcap cap_ipc_lock=+ep /vault/plugins/orchestrate
 
   # Marks presence of Istio, which influences things like port namings
-  istioEnabled: false
+  #istioEnabled: false
 
 ---
 #apiVersion: v1

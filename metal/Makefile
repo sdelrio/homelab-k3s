@@ -92,6 +92,11 @@ ansible/uninstall/%:	## playbooks/uninstall/<name> (without .yml)
 		$(ANSIBLE_EXTRA_ARGS) \
 		playbooks/uninstall/$*.yml
 
+ansible/destroy/%:	## playbooks/destroy/<name> (without .yml)
+	@${PYTHON_BIN_DIR}/ansible-playbook \
+		$(ANSIBLE_EXTRA_ARGS) \
+		playbooks/destroy/$*.yml
+
 apply-tf:	## Run terraform: Create cloudflare api token ConfigMaps
 apply-tf:
 	@cd ../terraform && \

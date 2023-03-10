@@ -46,15 +46,15 @@ for i in "${arrayCRD[@]}" ; do
   kubectl delete --all $i
 done
 
+echo --- Delete linbit CRDs left
 kubectl get crds | grep -o ".*.internal.linstor.linbit.com"  | xargs -i{} sh -c "kubectl delete {}"
 
-
-#https://github.com/piraeusdatastore/piraeus-operator/blob/master/README.md
-# piraeus-operator-passphrase
+echo --- Show linbit CRDs left
+kubectl get crds | grep -o ".*.internal.linstor.linbit.com"  | xargs -i{} sh -c "echo {} && kubectl get {}"
 NS=piraeus-operator
-#NS=default
 
 # Remove the finalizer blocking deletion
-kubectl -n $NS patch -p '{"metadata": {"$deleteFromPrimitiveList/finalizers": ["piraeus.linbit.com/protect-master-passphrase"]}}' secret piraeus-operator-passphrase
+#kubectl -n $NS patch -p '{"metadata": {"$deleteFromPrimitiveList/finalizers": ["piraeus.linbit.com/protect-master-passphrase"]}}' secret piraeus-operator-passphrase
 # Remove the secret
-kubectl -n $NS delete secret piraeus-operator-passphrase
+#kubectl -n $NS delete secret piraeus-operator-passphrase
+kubectl -n $NS delete secret piraeus-operator-tls

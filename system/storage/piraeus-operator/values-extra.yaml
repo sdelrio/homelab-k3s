@@ -2,88 +2,28 @@
 .minimal-resouces: &minimal-resources
   # Resources for a minimal stateless go container.
   limits:
-    cpu: "0.2"
     memory: "250Mi"
   requests:
-    cpu: "0.1"
+    cpu: "100m"
     memory: "100Mi"
 
-# https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-overview
-etcd:
-  enabled: false # https://github.com/piraeusdatastore/piraeus-operator/blob/master/doc/k8s-backend.md
-stork:
-  enabled: false
-csi:
-  enabled: true
-  enableTopology: true  # We can use more intelligent placement of our volumens and pods
-  resources: *minimal-resources
+installCRDs: true
+
+webhook:
+  timeoutSeconds: 4
+
 operator:
-  replicas: 1 # <- number of replicas for the operator deployment
-  resources:
-    requests:
-      memory: 30Mi
-      cpu: 25m
-    limits:
-      memory: 50Mi
-      cpu: 100m
-  controller:
-    dbConnectionURL: k8s # https://github.com/piraeusdatastore/piraeus-operator/blob/master/doc/k8s-backend.md
-    resources:
-      requests:
-        memory: 320Mi
-        cpu: 100m
-      limits:
-        memory: 448Mi
-        cpu: '1'
-    additionalProperties:  # https://github.com/LINBIT/linstor-server/blob/master/docs/rest_v1_openapi.yaml
-      DrbdOptions/AutoEvictMaxDisconnectedNodes: "0"
-      DrbdOptions/AutoEvictAllowEviction: "False"
-  satelliteSet:
-    enabled: true
-    resources:
-      requests:
-        memory: 150Mi
-        cpu: 100m
-      limits:
-        memory: 500Mi
-        cpu: "1"
-    # Build and load DRBD using the Kernel Module Injection Image
-    kernelModuleInjectionImage: quay.io/piraeusdatastore/drbd9-jammy
+  #resources: *minimal-resources
+  resources: {}
 
-    # Selects the source for the DRBD kernel module: None|Compile|ShippedModules|DepsOnly
-    #  on ubuntu, you can install drbd by PPA https://launchpad.net/~linbit/+archive/ubuntu/linbit-drbd9-stack
-    kernelModuleInjectionMode: Compile
+kubeRbacProxy:
+  #resources: *minimal-resources
+  resources: {}
 
-    kernelModuleInjectionResources:
-      limits:
-        cpu: "2"
-        memory: "1Gi"
-      requests:
-        cpu: "500m"
-        memory: "750Mi"
-
-    # https://piraeus.io/site/docs/storage
-    storagePools:
-      #lvmPools:
-      #- name: lvm-thick
-      #  volumeGroup: drbdpool
-      #  devicePaths:
-      #    - /dev/loop0
-      lvmThinPools:
-      - name: lvm-thin
-        thinVolume: thinpool
-        #volumeGroup: []  ## You can use the devicePaths: [] option to let LINSTOR automatically prepare devices for the pool
-        volumeGroup: linstor_thinpool  # NOTE: The volume group created by LINSTOR for LVMTHIN pools will always follow the scheme "linstor_$THINPOOL".
-        devicePaths:
-          - /dev/loop0
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane # New value since Kubernetes 1.24
-        operator: Exists
-        effect: NoSchedule
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-haController:
-  enabled: false  # Optional component, failover of pods quicker if enabled when having 3+ nodes
-  resources: *minimal-resources
-
+tolerations:
+  - key: node-role.kubernetes.io/control-plane # New value since Kubernetes 1.24
+    operator: Exists
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/master
+    operator: Exists
+    effect: NoSchedule

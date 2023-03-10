@@ -1,130 +1,94 @@
-global:
-  imagePullPolicy: IfNotPresent # empty pull policy means k8s default is used ("always" if tag == ":latest", "ifnotpresent" else)
-  setSecurityContext: true # Force non-privileged containers to run as non-root users
-# Dependency charts
-etcd:
-  enabled: true
-  persistentVolume:
-    enabled: true
-    storage: 1Gi
-  replicas: 1 # How many instances of etcd will be added to the initial cluster.
-  resources: {} # resource requirements for etcd containers
-  image:
-    repository: gcr.io/etcd-development/etcd
-    tag: v3.4.15
-stork:
-  enabled: false
-  storkImage: docker.io/openstorage/stork:2.8.2
-  schedulerImage: registry.k8s.io/kube-scheduler
-  schedulerTag: ""
-  replicas: 1
-  storkResources: {} # resources requirements for the stork plugin containers
-  schedulerResources: {} # resource requirements for the kube-scheduler containers
-  podsecuritycontext: {}
-csi:
-  enabled: true
-  pluginImage: quay.io/piraeusdatastore/piraeus-csi:v0.22.0
-  csiAttacherImage: registry.k8s.io/sig-storage/csi-attacher:v4.0.0
-  csiLivenessProbeImage: registry.k8s.io/sig-storage/livenessprobe:v2.8.0
-  csiNodeDriverRegistrarImage: registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.6.2
-  csiProvisionerImage: registry.k8s.io/sig-storage/csi-provisioner:v3.3.0
-  csiSnapshotterImage: registry.k8s.io/sig-storage/csi-snapshotter:v6.1.0
-  csiResizerImage: registry.k8s.io/sig-storage/csi-resizer:v1.6.0
-  csiAttacherWorkerThreads: 10
-  csiProvisionerWorkerThreads: 10
-  csiSnapshotterWorkerThreads: 10
-  csiResizerWorkerThreads: 10
-  controllerReplicas: 1
-  nodeAffinity: {}
-  nodeTolerations: []
-  controllerAffinity: {}
-  controllerTolerations: []
-  enableTopology: true
-  resources: {}
-  customLabels: {}
-  customAnnotations: {}
-  kubeletPath: /var/lib/kubelet
-  controllerSidecars: []
-  controllerExtraVolumes: []
-  nodeSidecars: []
-  nodeExtraVolumes: []
-priorityClassName: ""
-drbdRepoCred: "" # <- Specify the kubernetes secret name here
-linstorSslMethod: "manual" # <- If set to 'helm' or 'cert-manager' the certificates will be generated automatically
-linstorHttpsMethod: "manual" # <- If set to 'helm' or 'cert-manager' the certificates will be generated automatically
-linstorHttpsControllerSecret: "" # <- name of secret containing linstor server certificates+key. See docs/security.md
-linstorHttpsClientSecret: "" # <- name of secret containing linstor client certificates+key. See docs/security.md
-controllerEndpoint: "" # <- override to the generated controller endpoint. use if controller is not deployed via operator
-psp:
-  privilegedRole: ""
-  unprivilegedRole: ""
+replicaCount: 1
+
+installCRDs: false
+
 operator:
-  replicas: 1 # <- number of replicas for the operator deployment
-  image: quay.io/piraeusdatastore/piraeus-operator:v1.10.1
-  affinity: {}
-  tolerations: []
-  resources: {}
-  customLabels: {}
-  customAnnotations: {}
-  podsecuritycontext: {}
-  args:
-    createBackups: true
-    createMonitoring: true
-  sidecars: []
-  extraVolumes: []
-  controller:
-    enabled: true
-    controllerImage: quay.io/piraeusdatastore/piraeus-server:v1.20.2
-    dbConnectionURL: ""
-    luksSecret: ""
-    dbCertSecret: ""
-    dbUseClientCert: false
-    sslSecret: ""
-    affinity: {}
-    httpBindAddress: ""
-    httpsBindAddress: ""
-    tolerations:
-      - key: node-role.kubernetes.io/master
-        operator: Exists
-        effect: NoSchedule
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
-    resources: {}
-    replicas: 1
-    additionalEnv: []
-    additionalProperties: {}
-    sidecars: []
-    extraVolumes: []
-    customLabels: {}
-    customAnnotations: {}
-  satelliteSet:
-    enabled: true
-    satelliteImage: quay.io/piraeusdatastore/piraeus-server:v1.20.2
-    storagePools: {}
-    sslSecret: ""
-    automaticStorageType: None
-    affinity: {}
-    tolerations: []
-    resources: {}
-    monitoringImage: quay.io/piraeusdatastore/drbd-reactor:v0.10.2
-    monitoringBindAddress: ""
-    kernelModuleInjectionImage: quay.io/piraeusdatastore/drbd9-bionic:v9.1.12
-    kernelModuleInjectionMode: Compile
-    kernelModuleInjectionAdditionalSourceDirectory: ""
-    kernelModuleInjectionResources: {}
-    kernelModuleInjectionExtraVolumeMounts: []
-    additionalEnv: []
-    sidecars: []
-    extraVolumes: []
-    customLabels: {}
-    customAnnotations: {}
-haController:
-  enabled: false
-  image: quay.io/piraeusdatastore/piraeus-ha-controller:v0.3.0
-  affinity: {}
-  tolerations: []
-  resources: {}
-  replicas: 1
-  customLabels: {}
-  customAnnotations: {}
+  image:
+    repository: quay.io/piraeusdatastore/piraeus-operator
+    pullPolicy: IfNotPresent
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  options:
+    leaderElect: true
+
+  resources: { }
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+kubeRbacProxy:
+  image:
+    repository: gcr.io/kubebuilder/kube-rbac-proxy
+    pullPolicy: IfNotPresent
+    tag: v0.13.1
+  options:
+    logtostderr: "true"
+    v: 0
+  securityContext:
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+    runAsUser: 1000
+
+  resources: { }
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+
+webhook:
+  timeoutSeconds: 2
+  failurePolicy: Fail
+
+tls:
+  certificateSecret: ""
+  autogenerate: true
+  renew: false
+  certManagerIssuerRef: {}
+
+imagePullSecrets: [ ]
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: { }
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+podAnnotations: { }
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+nodeSelector: { }
+
+tolerations: [ ]
+affinity: { }
+
+podDisruptionBudget:
+  enabled: true
+  minAvailable: 1
+  # maxUnavailable: 1

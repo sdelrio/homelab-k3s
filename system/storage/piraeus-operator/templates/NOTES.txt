@@ -1,32 +1,26 @@
-Piraeus installed!
+Piraeus Operator installed.
 
-Please wait for all resources to be ready:
+{{- if not (.Capabilities.APIVersions.Has "piraeus.io/v1/LinstorCluster") }}
+It looks like the necessary CRDs for Piraeus Operator are still missing.
 
-  kubectl wait --namespace {{ .Release.Namespace }} --for=condition=Ready --timeout=10m pod --all
+To apply them via helm now use:
 
-=== NEXT STEPS ===
+  helm upgrade {{ .Release.Name }} ./charts/piraeus --reuse-values --set installCRDs=true
 
-For your next steps, check our documentation at:
+Alternatively, you can manage them manually:
 
-  https://github.com/piraeusdatastore/piraeus-operator/tree/master/doc
+  kubectl apply --server-side -k "https://github.com/piraeusdatastore/piraeus-operator//config/crd?ref=v2"
 
-{{ if not .Values.operator.satelliteSet.storagePools }}
-Since you didn't configure any storage pools, now would be a great time to add some.
-{{ end }}
+{{- end }}
 
-{{ if not (.Capabilities.APIVersions.Has "snapshot.storage.k8s.io/v1") }}
-It looks like your cluster does not currently support snapshots. The documentation contains instructions on how
-to enable snapshots in your cluster.
-{{ end }}
+To get started with Piraeus, simply run:
 
-If you want to take full advantage of Piraeus and are looking for faster fail-over of your workloads in case of storage
-issues, consider installing the Piraeus HA Controller:
+$ kubectl apply -f - <<EOF
+apiVersion: piraeus.io/v1
+kind: LinstorCluster
+metadata:
+  name: linstorcluster
+spec: {}
+EOF
 
-  helm repo add piraeus-charts https://piraeus.io/helm-charts/
-  helm install piraeus-ha-controller piraeus-charts/piraeus-ha-controller
-
-If you are running on ephemeral infrastructure and still want to take advantage of strict volume affinity, take a look
-at our LINSTOR Affinity Controller. It helps ensure a PVs affinity is always in sync with the state of the LINSTOR volume.
-
-  helm repo add piraeus-charts https://piraeus.io/helm-charts/
-  helm install linstor-affinity-controller piraeus-charts/linstor-affinity-controller
+For next steps, check out our documentation at https://github.com/piraeusdatastore/piraeus-operator/tree/v2/docs

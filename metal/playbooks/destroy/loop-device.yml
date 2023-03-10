@@ -49,9 +49,18 @@
       shell: >
         blkdiscard {{ loop_disk_device }} && sync
 
-    - name: Wwipe the block device
+    - name: Wipe the block device
       become: true
       command: "wipefs -af {{ loop_disk_device }}"
+
+    - name: Recursively remove directory
+      ansible.builtin.file:
+        path: "/etc/lvm/{{ item }}"
+        state: absent
+      loop:
+        - archive
+        - backup
+      tags: ["debug"]
 
     - name: Re-mount loop device
       shell: >

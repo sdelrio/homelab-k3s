@@ -1,8 +1,0 @@
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshot
-metadata:
-  name: my-first-linstor-snapshot
-spec:
-  volumeSnapshotClassName: my-first-linstor-snapshot-class
-  source:
-    persistentVolumeClaimName: pvc-claim-1

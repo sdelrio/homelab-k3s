@@ -132,6 +132,7 @@ stacks:
     proj_namespaces:
       - openebs-localpv
       - piraeus-operator
+      - piraeus-datastore
       - piraeus-storageclass
       - volume-snapshot-crds
 #    sync: true

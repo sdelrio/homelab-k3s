@@ -18,9 +18,13 @@ os_sysctl:
   #- { key: vm.nr_hugepages,value: 128 } # Enable hugpages, can cause some problems if not used properly used with resources with some images
   - { key: vm.nr_hugepages, value: 0 } # Disable hugpages
   - { key: fs.inotify.max_user_watches, value: 204800}  # https://docs.syncthing.net/users/faq.html#inotify-limits
+  - { key: fs.inotify.max_user_instances, value: 512}  # linstor csi not enough with 128
   # https://www.youtube.com/watch?v=eH4x5PGgDoM&list=PLGJrMkJUF3M1uLHaTpHdZgTzQUGl1CDdP&index=12
   # https://youtu.be/eH4x5PGgDoM?list=PLGJrMkJUF3M1uLHaTpHdZgTzQUGl1CDdP&t=1772
   - { key: vm.overcommit_ratio, value: 100}
   - { key: vm.overcommit_memory, value: 2}  # 0: heuristic overcommit (default)
                                               # 1: always overcommit, never check
                                               # 2: always check, never overcommit
+  - { key: vm.max_map_count, value: 262144} # Elasticsearch: allow node.store.allow_mmap: true
+                                            # https://www.elastic.co/guide/en/cloud-on-k8s/master/k8s-virtual-memory.html
+                                            # https://www.elastic.co/guide/en/elasticsearch/reference/current/vm-max-map-count.html

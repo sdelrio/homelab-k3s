@@ -1,6 +1,0 @@
-apiVersion: snapshot.storage.k8s.io/v1
-kind: VolumeSnapshotClass
-metadata:
-  name: my-first-linstor-snapshot-class
-driver: linstor.csi.linbit.com
-deletionPolicy: Delete

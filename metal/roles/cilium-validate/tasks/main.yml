@@ -8,6 +8,11 @@
     owner: root
     group: root
     mode: 0755
+  notify:
+    - delete ciliumbin
+
+- name: Flush handlers
+  meta: flush_handlers
 
 - name: Unarchive a file that is already on the remote machine
   ansible.builtin.unarchive:

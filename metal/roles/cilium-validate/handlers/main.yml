@@ -1,0 +1,5 @@
+- name: delete ciliumbin
+  ansible.builtin.file:
+    path: "/usr/local/bin/cilium"
+    state: absent
+

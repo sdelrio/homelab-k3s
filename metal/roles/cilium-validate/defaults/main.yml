@@ -1,9 +1,9 @@
 ---
-cilium_version: "0.12.7"
+cilium_version: "0.13.1"
 cilium_arch: "amd64"
 cilium_url: "https://github.com/cilium/cilium-cli/releases/download/v{{ cilium_version }}/cilium-linux-{{ cilium_arch }}.tar.gz"
 cilium_downloaded_file: "/opt/cilium_v{{ cilium_version }}.tar.gz"
 
 cilium_sha256:
-  amd64: 9c4911f5689d9cf90edb3631f960469282bae055c5cdc70c0c1acef3c7362bfb
-  arm64: 2ebb4e4acc46d75e5c8200368bf09913d8b9d80f02263a1fb8d71ae54a15e00d
+  amd64: dfabb7a080cd2ae40c71e51980183949bd5ce76184ac439ef32f988825cb275d
+  arm64: 8f17d27803ecbfd05eb6b010d8dda9afc9b86832f3dad5fef25e42e77a1083dc

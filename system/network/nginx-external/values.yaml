@@ -52,16 +52,17 @@ ingress-nginx:
             app.kubernetes.io/name: nginx-external
     service:
       enabled: true
+      loadBalancerIP: &IP "192.168.1.249"
 
-      annotations: {}
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: *IP
+
       labels: {}
 
       ## List of IP addresses at which the controller services are available
       ## Ref: https://kubernetes.io/docs/user-guide/services/#external-ips
       ##
       externalIPs: []
-
-      loadBalancerIP: "192.168.1.249"
 
       enableHttp: true
       enableHttps: true

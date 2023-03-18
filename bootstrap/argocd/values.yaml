@@ -39,7 +39,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
 
   server:
     logFormat: text  ## log format: text|json
-    logLevel: arning  ## log level
+    logLevel: warning  ## log level
 
     autoscaling:
       enabled: true

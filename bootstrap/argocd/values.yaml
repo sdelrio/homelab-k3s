@@ -185,7 +185,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
       enabled: true
       minReplicas: 1
       maxReplicas: 3
-      targetCPUUtilizationiPercentage: 70
+      targetCPUUtilizationPercentage: 98
       targetMemoryUtilizationPercentage: 80
     resources:
       limits:

@@ -50,7 +50,6 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
 
     resources:
       limits:
-        cpu: 500m
         memory: 256Mi
       requests:
         cpu: 100m
@@ -98,7 +97,6 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
     enableStatefulSet: true
     resources:
       limits:
-        cpu: 800m
         memory: 1024Mi
       requests:
         cpu: 400m
@@ -191,8 +189,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
       targetMemoryUtilizationPercentage: 80
     resources:
       limits:
-        cpu: 800m
-        memory: 192Mi
+        memory: 208Mi
       requests:
         cpu: 400m
         memory: 128Mi
@@ -206,7 +203,6 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
     metrics: *metrics
     resources:
       limits:
-        cpu: 200m
         memory: 128Mi
       requests:
         cpu: 100m

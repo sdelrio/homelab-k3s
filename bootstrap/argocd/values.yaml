@@ -39,7 +39,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
 
   server:
     logFormat: text  ## log format: text|json
-    logLeve: info  ## log level
+    logLevel: arning  ## log level
 
     autoscaling:
       enabled: true
@@ -90,7 +90,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
   controller:
     metrics: *metrics
     logFormat: text
-    logLevel: info
+    logLevel: warning
     # If changing the number of replicas you must pass the number as ARGOCD_CONTROLLER_REPLICAS as an environment variable
     # replicas > 1 only worth if managing several clusters
     #replicas: 2
@@ -111,7 +111,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
   repoServer:
     metrics: *metrics
     logFormat: text
-    logLevel: info
+    logLevel: warning
     rbac:
     - apiGroups:
       - ""
@@ -185,7 +185,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
       enabled: true
       minReplicas: 1
       maxReplicas: 3
-      targetCPUUtilizationPercentage: 98
+      targetCPUUtilizationPercentage: 200
       targetMemoryUtilizationPercentage: 80
     resources:
       limits:

@@ -115,7 +115,6 @@ ingress-nginx:
         cpu: 10m
         memory: 16Mi
       limits:
-        cpu: 50m
         memory: 32Mi
     image:
       #registry: k8s.gcr.io

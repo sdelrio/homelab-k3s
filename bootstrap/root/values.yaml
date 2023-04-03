@@ -129,6 +129,8 @@ stacks:
         kind: LinstorSatelliteSet
       - group: snapshot.storage.k8s.io
         kind: VolumeSnapshotClass
+      - group: admissionregistration.k8s.io
+        kind: ValidatingWebhookConfiguration
     proj_namespaces:
       - openebs-localpv
       - piraeus-operator

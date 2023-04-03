@@ -5,7 +5,6 @@ node-feature-discovery:
         cpu: 25m
         memory: 18Mi
       limits:
-        cpu: 25m
         memory: 18Mi
     config:
       core:
@@ -137,5 +136,4 @@ node-feature-discovery:
         cpu: 25m
         memory: 22Mi
       limits:
-        cpu: 50m
         memory: 128Mi

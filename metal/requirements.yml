@@ -3,5 +3,5 @@ collections:
     version: 2.4.0
 
   - name: community.general
-    version: 5.8.6
+    version: 5.8.7
 

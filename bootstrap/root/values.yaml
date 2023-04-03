@@ -109,6 +109,20 @@ stacks:
         kind: IngressClass
   - name: system-storage
     path: 'system/storage'
+    ignoreDifferences:
+      - group: '*'
+        kind: ValidatingWebhookConfiguration
+        jsonPointers:
+        - /webhooks/0/clientConfig/caBundle
+        - /webhooks/1/clientConfig/caBundle
+        - /webhooks/2/clientConfig/caBundle
+      - group: '*'
+        kind: Secret
+        jsonPointers:
+        - /data/ca.crt
+        - /data/ca.key
+        - /data/tls.crt
+        - /data/tls.key
     helm_extra: true
     whitelist:
       - group: rbac.authorization.k8s.io

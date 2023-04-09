@@ -1,7 +1,6 @@
 vault-operator:
   resources:
     limits:
-      cpu: 100m
       memory: 64Mi
     requests:
       cpu: 25m

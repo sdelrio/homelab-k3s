@@ -24,6 +24,15 @@ parameters:
   # Setting a fstype is required for "fsGroup" permissions to work correctly.
   # Currently supported: xfs/ext4
   csi.storage.k8s.io/fstype: {{ $fs }}
+  # property.linstor.csi.linbit.com/*
+  # https://linbit.com/drbd-user-guide/linstor-guide-1_0-en/#s-kubernetes-storage-class-properties
+  # property.linstor.csi.linbit.com/
+  {{- with $.Values.property }}
+  {{ $.Values.property | toYaml | nindent 2}}
+  {{- end }}
+  {{- with $replica.property }}
+  {{ $replica.property | toYaml | nindent 2}}
+  {{- end }}
 ---
 apiVersion: storage.k8s.io/v1
 kind: StorageClass

@@ -1,0 +1,62 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: ca-bootstrapper
+  namespace: piraeus-operator
+spec:
+  selfSigned: { }
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: linstor-internal-ca
+  namespace: piraeus-operator
+spec:
+  commonName: linstor-internal-ca
+  secretName: linstor-internal-ca
+  duration: 87600h # 10 years
+  isCA: true
+  usages:
+    - signing
+    - key encipherment
+    - cert sign
+  issuerRef:
+    name: ca-bootstrapper
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: linstor-internal-ca
+  namespace: piraeus-operator
+spec:
+  ca:
+    secretName: linstor-internal-ca
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: linstor-api-ca
+  namespace: piraeus-operator
+spec:
+  commonName: linstor-api-ca
+  secretName: linstor-api-ca
+  duration: 87600h # 10 years
+  isCA: true
+  usages:
+    - signing
+    - key encipherment
+    - cert sign
+  issuerRef:
+    name: ca-bootstrapper
+    kind: Issuer
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: linstor-api-ca
+  namespace: piraeus-operator
+spec:
+  ca:
+    secretName: linstor-api-ca

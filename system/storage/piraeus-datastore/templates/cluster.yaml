@@ -1,0 +1,27 @@
+apiVersion: piraeus.io/v1
+kind: LinstorCluster
+metadata:
+  name: linstorcluster
+spec:
+  internalTLS:
+    certManager:
+      name: linstor-internal-ca
+      kind: Issuer
+  apiTLS:
+    certManager:
+      name: linstor-api-ca
+      kind: Issuer
+  patches:
+    - target:
+        kind: NetworkPolicy
+        name: satellite
+      # https://github.com/cilium/cilium/issues/16622
+      # https://kubernetes.io/docs/concepts/services-networking/network-policies/
+      patch: |-
+        - op: remove
+          path: /spec
+        - op: add
+          path: /spec
+          values:
+            ingress:
+            - {}

@@ -1,0 +1,17 @@
+basename: linstor
+pool: "thinpool"
+
+filesystems:
+  - xfs
+  - ext4
+
+replicas:
+  - number: 1
+  - number: 2
+  - number: 3
+
+properties:  # to use piraeus-ha-controller, like the piraeus operator v2
+  property.linstor.csi.linbit.com/DrbdOptions/auto-quorum: suspend-io
+  property.linstor.csi.linbit.com/DrbdOptions/Resource/on-no-data-accessible: suspend-io
+  property.linstor.csi.linbit.com/DrbdOptions/Resource/on-suspended-primary-outdated: force-secondary
+  property.linstor.csi.linbit.com/DrbdOptions/Net/rr-conflict: retry-connect

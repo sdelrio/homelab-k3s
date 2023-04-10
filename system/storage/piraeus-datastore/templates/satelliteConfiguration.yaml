@@ -1,0 +1,64 @@
+#apiVersion: piraeus.io/v1
+#kind: LinstorSatelliteConfiguration
+#metadata:
+#  name: disabled-nodes
+#spec:
+#  nodeSelector:
+#    piraeus.io/autoplace: "no"
+#  properties:
+#    - name: AutoplaceTarget
+#      value: "no"
+---
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: all-satellites
+spec:
+  patches:
+    - target:
+        kind: ConfigMap
+        name: satellite-config
+      patch: |-
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: satellite-config
+        data:
+          linstor_satellite.toml: |
+            [loggingLinstorSatelliteConfiguration]
+              linstor_level = "TRACE"
+---
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: storage-pool
+spec:
+  storagePools:
+    - name: filethinpool
+      fileThinPool:
+        directory: /var/lib/piraeus-datastore/filethinpool
+    - name: thinpool
+      lvmThinPool: {}
+      # lvmThinPool: Configures a LVM Thin Pool as storage pool.
+      # Defaults to using the storage pool name as name for the thin pool volume and the storage pool name prefixed by linstor_ as the VG name.
+      # Can be overridden by setting thinPool and volumeGroup.
+      source:
+        hostDevices:
+          - /dev/sda4
+          - /dev/nvme0n1p4
+      # manual steps in case auto fails:
+      # pvcreate /dev/sda4
+      # vgcreate linstor_thinpool /dev/sda4
+      # pvcreate /dev/nvme0n1p4
+      # vgcreate linstor_thinpool /dev/nvme0n1p4
+---
+# https://github.com/piraeusdatastore/piraeus-operator/blob/v2/docs/how-to/internal-tls.md
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: internal-tls
+spec:
+  internalTLS:
+    certManager:
+      name: linstor-internal-ca
+      kind: Issuer

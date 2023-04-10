@@ -1,0 +1,14 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: linstor-file
+provisioner: linstor.csi.linbit.com
+allowVolumeExpansion: true
+volumeBindingMode: WaitForFirstConsumer
+parameters:
+  linstor.csi.linbit.com/storagePool: filethinpool
+  # piraeus-ha-controller recomended in docs:
+  property.linstor.csi.linbit.com/DrbdOptions/auto-quorum: suspend-io
+  property.linstor.csi.linbit.com/DrbdOptions/Resource/on-no-data-accessible: suspend-io
+  property.linstor.csi.linbit.com/DrbdOptions/Resource/on-suspended-primary-outdated: force-secondary
+  property.linstor.csi.linbit.com/DrbdOptions/Net/rr-conflict: retry-connect

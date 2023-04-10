@@ -42,7 +42,7 @@ metadata:
 spec:
   commonName: linstor-api-ca
   secretName: linstor-api-ca
-  duration: 87600h0m0  # 10 years
+  duration: 87600h0m0s  # 10 years
   isCA: true
   usages:
     - signing

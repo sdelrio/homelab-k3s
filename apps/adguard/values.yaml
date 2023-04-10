@@ -14,6 +14,8 @@ adguard-home:
       tls:
         - hosts:
           - *host
+  strategy:
+    type: Recreate
   services:
     dns:
       #type: LoadBalancer
@@ -34,7 +36,6 @@ adguard-home:
 
   resources:
     limits:
-      cpu: 200m
       memory: 128Mi
     requests:
       cpu: 100m

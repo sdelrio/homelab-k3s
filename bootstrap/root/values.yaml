@@ -145,6 +145,10 @@ stacks:
         kind: VolumeSnapshotClass
       - group: admissionregistration.k8s.io
         kind: ValidatingWebhookConfiguration
+      - group: piraeus.io
+        kind: LinstorSatelliteConfiguration
+      - group: piraeus.io
+        kind: LinstorCluster
     proj_namespaces:
       - openebs-localpv
       - piraeus-operator

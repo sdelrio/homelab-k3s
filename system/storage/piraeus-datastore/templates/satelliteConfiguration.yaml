@@ -62,3 +62,21 @@ spec:
     certManager:
       name: linstor-internal-ca
       kind: Issuer
+---
+# https://github.com/piraeusdatastore/piraeus-operator/blob/v2/docs/how-to/drbd-host-networking.md
+apiVersion: piraeus.io/v1
+kind: LinstorSatelliteConfiguration
+metadata:
+  name: host-network
+spec:
+  patches:
+    - target:
+        kind: Pod
+        name: satellite
+      patch: |
+        apiVersion: v1
+        kind: Pod
+        metadata:
+          name: satellite
+        spec:
+          hostNetwork: true

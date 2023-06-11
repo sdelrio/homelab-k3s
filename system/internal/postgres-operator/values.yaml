@@ -1,16 +1,17 @@
-configGeneral:
-  enable_shm_volume: false
+postgres-operator:
+  configGeneral:
+    enable_shm_volume: false
 
-configMajorVersionUpgrade:
-  major_version_upgrade_mode: "full"  # "off": no upgrade, "manual": manifest triggers action, "full": minimal version violation triggers too
-  minimal_major_version: "10"
+  configMajorVersionUpgrade:
+    major_version_upgrade_mode: "full"  # "off": no upgrade, "manual": manifest triggers action, "full": minimal version violation triggers too
+    minimal_major_version: "10"
 
-configKubernetes:
-  enable_pod_antiaffinity: false
+  configKubernetes:
+    enable_pod_antiaffinity: false
 
-resources:
-    limits:
-      memory: 250Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+  resources:
+      limits:
+        memory: 250Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi

@@ -60,6 +60,7 @@ stacks:
       - nf-discovery
       - reloader
       - vault-operator
+      - postgres-operator
     whitelist:
       - group: rbac.authorization.k8s.io
         kind: ClusterRole

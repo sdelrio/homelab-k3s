@@ -4,6 +4,6 @@ version: 0.0.1
 dependencies:
   - name: metallb
     #version: 0.13.4  # note: Warning: policy/v1beta1 PodSecurityPolicy is deprecated in v1.21+, unavailable in v1.25+
-    version: 0.13.9  # note: metallb.io v1beta1 AddressPool is deprecated, consider using IPAddressPool
+    version: 0.13.10  # note: metallb.io v1beta1 AddressPool is deprecated, consider using IPAddressPool
     repository: https://metallb.github.io/metallb
 

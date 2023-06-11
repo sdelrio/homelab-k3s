@@ -15,7 +15,7 @@ argo-cd:  # https://stackoverflow.com/questions/68297354/what-is-the-default-pas
       exec.enabled: 'true'  ## Ref: https://argo-cd.readthedocs.io/en/latest/operator-manual/rbac/#exec-resource
       statusbadge.enabled: 'true'
       url: https://*host
-      kustomize.buildOptions: --enable-helm
+      kustomize.buildOptions: --enable-helm --load-restrictor=LoadRestrictionsNone
       resource.customizations.health.argoproj.io_Application: |
         hs = {}
         hs.status = "Progressing"

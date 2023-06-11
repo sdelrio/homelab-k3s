@@ -6,7 +6,7 @@ helmCharts:
 # https://kubectl.docs.kubernetes.io/references/kustomize/builtins/#_helmchartinflationgenerator_
 - name: postgres-operator
   repo: https://opensource.zalando.com/postgres-operator/charts/postgres-operator
-  version: 1.10.0
+  version: 1.8.2
   releaseName: postgres-operator
   namespace: postgres-operator
   valuesFile: values.yaml

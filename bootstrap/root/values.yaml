@@ -68,7 +68,7 @@ stacks:
         kind: ClusterRoleBinding
       - group: '*'
         kind: CustomResourceDefinition
-      - group: acid.zalan.do
+      - group: '*'
         kind: OperatorConfiguration
   - name: system-network
     path: 'system/network'
